@@ -21,6 +21,12 @@ public class StateCapitalHandler implements LinkHandler<Void> {
     @Autowired
     private ResidenceHandler residenceHandler;
 
+    @Autowired
+    private CraftHandler craftHandler;
+
+    @Autowired
+    private EntertainmentHandler entertainmentHandler;
+
     @Override
     public Void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
@@ -29,21 +35,32 @@ public class StateCapitalHandler implements LinkHandler<Void> {
         //建筑
         Elements buildings = document.select(".mw-parser-output>div[style]");
         if(!buildings.isEmpty() && buildings.size() == 3){
+            //居住建筑
             Element residenceBuildingContainer = buildings.get(0);
             Elements residenceBuildings = residenceBuildingContainer.select("div>a:nth-child(1)");
-            residenceBuildings.stream().forEach(stateCapital -> {
-                String buildingName = stateCapital.attr("title");
-                String href = stateCapital.attr("href");
-                //居住建筑
-                if(StringUtils.isBlank(buildingName) || StringUtils.isBlank(href)){
-                    String errorMsg = MessageFormat.format("州府信息有误，name：{1}，uri：{2}",buildingName, href);
-                }
+            residenceBuildings.stream().forEach(building -> {
+                String href = building.attr("href");
                 String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
                 residenceHandler.handle(url,null);
-//                JSONObject buildingContext = new JSONObject();
-//                buildingContext.putAll(context);
             });
 
+            //生产建筑
+            Element craftBuildingContainer = buildings.get(1);
+            Elements craftBuildings = craftBuildingContainer.select("div>a:nth-child(1)");
+            craftBuildings.stream().forEach(building -> {
+                String href = building.attr("href");
+                String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
+                craftHandler.handle(url,null);
+            });
+
+            //娱乐建筑
+            Element entertainmentBuildingContainer = buildings.get(2);
+            Elements entertainmentBuildings = entertainmentBuildingContainer.select("div>a:nth-child(1)");
+            entertainmentBuildings.stream().forEach(building -> {
+                String href = building.attr("href");
+                String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
+                entertainmentHandler.handle(url,null);
+            });
         }
         return null;
     }

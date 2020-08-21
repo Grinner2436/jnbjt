@@ -14,11 +14,21 @@ class RegexTests {
         String sourceTimeString = "20分钟后存满";
         Pattern secondPattern1 = Pattern.compile("(\\d+)分");
         Matcher matcher1 = secondPattern1.matcher(sourceTimeString);
-        if(matcher1.matches()){
+        if(matcher1.find()){
             String secondString = matcher1.group(1);
             System.out.println(secondString);
         }
     }
 
 
+    @Test
+    void testSlf4j1() {
+        String sourceTimeString = "20分钟后存满";
+        Pattern secondPattern1 = Pattern.compile("(\\d+)分");
+        Matcher matcher1 = secondPattern1.matcher(sourceTimeString);
+        if(matcher1.find()){
+            String secondString = matcher1.group(1);
+            System.out.println(secondString);
+        }
+    }
 }

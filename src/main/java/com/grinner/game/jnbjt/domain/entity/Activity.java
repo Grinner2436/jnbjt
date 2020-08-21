@@ -1,5 +1,6 @@
 package com.grinner.game.jnbjt.domain.entity;
 
+import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.relation.BuildingProperty;
 import lombok.Data;
@@ -30,6 +31,9 @@ public class Activity {
 
     @Enumerated(EnumType.STRING)
     private Profession profession;
+
+    @Enumerated(EnumType.STRING)
+    private Job job;
 
     @OneToOne
     @JoinColumn(name = "investment_id")

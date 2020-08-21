@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class ResidenceHandler implements LinkHandler<Void> {
+public class CraftHandler implements LinkHandler<Void> {
 
     @Autowired
     private StateCapitalRepository stateCapitalRepository;
@@ -49,8 +49,38 @@ public class ResidenceHandler implements LinkHandler<Void> {
     private ActivityRepository activityRepository;
 
     private static Map<String, Profession> professionMap = new HashMap<>();
+    private static Map<String, BuildingType> buildingTypeMap = new HashMap<>();
     static {
         professionMap.put("商业建筑",Profession.Finance);
+        professionMap.put("种植蔬菜",Profession.Farm);
+        professionMap.put("种植菱角",Profession.Farm);
+        professionMap.put("生产肉类",Profession.Farm);
+        professionMap.put("饲养鸭子",Profession.Farm);
+        professionMap.put("养蚕造丝",Profession.Farm);
+        professionMap.put("生产原木",Profession.Farm);
+        professionMap.put("种植棉花",Profession.Farm);
+        professionMap.put("种植草药",Profession.Farm);
+        professionMap.put("生产桐油",Profession.Farm);
+
+        professionMap.put("烹制食物的地方",Profession.Craft);
+        professionMap.put("加工木板",Profession.Craft);
+        professionMap.put("制造纸张",Profession.Craft);
+        professionMap.put("生产布匹",Profession.Craft);
+        professionMap.put("纺织丝绸",Profession.Craft);
+        professionMap.put("缝制成衣",Profession.Craft);
+        professionMap.put("制作刺绣",Profession.Craft);
+        professionMap.put("挖掘粘土",Profession.Craft);
+        professionMap.put("烧制瓷器",Profession.Craft);
+        professionMap.put("烧制木炭",Profession.Craft);
+//        professionMap.put("炼丹",Profession.Craft);
+
+        professionMap.put("",Profession.Adventure);
+
+        buildingTypeMap.put("商业建筑",BuildingType.Decoration);
+        buildingTypeMap.put("",BuildingType.Entertainment);
+        buildingTypeMap.put("",BuildingType.Production);
+        buildingTypeMap.put("",BuildingType.Residence);
+        buildingTypeMap.put("",BuildingType.Adventure);
     }
     @Override
     public Void handle(String link, JSONObject context) {
@@ -66,7 +96,7 @@ public class ResidenceHandler implements LinkHandler<Void> {
         }
         building.setName(buildingName);
 
-        building.setBuildingType(BuildingType.Residence);
+        building.setBuildingType(BuildingType.Production);
 
         //数据区
         Elements tables = document.select(".main .row .col-lg-8");
@@ -106,8 +136,8 @@ public class ResidenceHandler implements LinkHandler<Void> {
                 List<AssetProperty> investments = new ArrayList<>();
                 //建造建筑时间投资
                 {
-                    String assetName = buildingProperties.get(3).select("img").attr("alt").replaceAll(".png", "");
-                    String sourceTimeString = buildingProperties.get(3).text()
+                    String assetName = buildingProperties.get(2).select("img").attr("alt").replaceAll(".png", "");
+                    String sourceTimeString = buildingProperties.get(2).text()
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
                     int minuteAmount = 0;
                     {
@@ -151,7 +181,7 @@ public class ResidenceHandler implements LinkHandler<Void> {
                     investments.add(assetProperty);
                 }
                 //建造建筑实物投资
-                List<Node> investmentElementsOfCreate = buildingProperties.get(5).children().get(0).childNodes();
+                List<Node> investmentElementsOfCreate = buildingProperties.get(4).children().get(0).childNodes();
                 investmentElementsOfCreate = HtmlUtils.trim(investmentElementsOfCreate);
                 for (int index = 0; index < investmentElementsOfCreate.size(); ) {
                     String assetName = investmentElementsOfCreate.get(index).attr("alt").replaceAll(".png", "");
@@ -192,7 +222,7 @@ public class ResidenceHandler implements LinkHandler<Void> {
             }
 
             //获取职业
-            String professionKey = buildingProperties.get(4).select("td").text().replaceAll("\\p{Zs}","");
+            String professionKey = buildingProperties.get(3).select("td").text().replaceAll("\\p{Zs}","");
             //经营活动职业
             Profession profession = professionMap.get(professionKey);
 

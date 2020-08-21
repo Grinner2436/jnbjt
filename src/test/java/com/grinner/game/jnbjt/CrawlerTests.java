@@ -35,19 +35,19 @@ class CrawlerTests {
         Matcher matcher2 = secondPattern2.matcher(sourceTimeString);
         Matcher matcher3 = secondPattern3.matcher(sourceTimeString);
         Matcher matcher4 = secondPattern4.matcher(sourceTimeString);
-        if(matcher1.matches()){
+        if(matcher1.find()){
             String secondString = matcher1.group(1);
             System.out.println(secondString);
         }
-        if(matcher2.matches()){
+        if(matcher2.find()){
             String secondString = matcher2.group(0);
             System.out.println(secondString);
         }
-        if(matcher3.matches()){
+        if(matcher3.find()){
             String secondString = matcher3.group(0);
             System.out.println(secondString);
         }
-        if(matcher4.matches()){
+        if(matcher4.find()){
             String secondString = matcher4.group(0);
             System.out.println(secondString);
         }

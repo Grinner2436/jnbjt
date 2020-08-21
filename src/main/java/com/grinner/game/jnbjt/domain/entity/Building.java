@@ -31,6 +31,6 @@ public class Building {
     @Enumerated(EnumType.STRING)
     private BuildingType buildingType;
 
-    @ElementCollection
-    private List<StateCapital> cities;
+    @ManyToMany
+    private List<StateCapital> stateCapitals;
 }
