@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/application.yml
+#/src/main/resources/application.yml
 /src/main/resources/application.properties
 /src/main/resources/model/Resident.json
 /src/main/resources/model/init-data.sql
