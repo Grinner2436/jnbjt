@@ -9,7 +9,6 @@ import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.relation.AssetProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,7 +27,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class EntertainmentHandler implements LinkHandler<Void> {
+public class EntertainmentBuildingHandler implements LinkHandler {
 
     @Autowired
     private StateCapitalRepository stateCapitalRepository;
@@ -49,7 +48,7 @@ public class EntertainmentHandler implements LinkHandler<Void> {
     private ActivityRepository activityRepository;
 
     @Override
-    public Void handle(String link, JSONObject context) {
+    public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
@@ -58,7 +57,7 @@ public class EntertainmentHandler implements LinkHandler<Void> {
         String buildingName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
         boolean buildingExists = buildingRepository.existsByName(buildingName);
         if(buildingExists){
-            return null;
+            return;
         }
         building.setName(buildingName);
 
@@ -98,7 +97,7 @@ public class EntertainmentHandler implements LinkHandler<Void> {
             {
                 Activity activity = new Activity();
                 //建造建筑总投资
-                List<AssetProperty> investments = new ArrayList<>();
+                Map<Asset, AssetProperty> investments = new HashMap<>();
                 //建造建筑时间投资
                 {
                     String assetName = buildingProperties.get(2).select("img").attr("alt").replaceAll(".png", "");
@@ -140,10 +139,10 @@ public class EntertainmentHandler implements LinkHandler<Void> {
                         assetRepository.save(asset);
                     }
                     AssetProperty assetProperty = new AssetProperty();
-                    assetProperty.setAsset(asset);
+                    //assetProperty.setAsset(asset);
                     assetProperty.setAmount(minuteAmount);
                     assetProperty.setAssetName(asset.getName());
-                    investments.add(assetProperty);
+                    investments.put(asset, assetProperty);
                 }
                 //建造建筑实物投资
                 List<Node> investmentElementsOfCreate = buildingProperties.get(3).children().get(0).childNodes();
@@ -166,10 +165,10 @@ public class EntertainmentHandler implements LinkHandler<Void> {
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                     index++;
                     AssetProperty assetProperty = new AssetProperty();
-                    assetProperty.setAsset(asset);
+                    //assetProperty.setAsset(asset);
                     assetProperty.setAmount(amount);
                     assetProperty.setAssetName(asset.getName());
-                    investments.add(assetProperty);
+                    investments.put(asset, assetProperty);
 
                 }
                 Investment investment = new Investment();
@@ -186,6 +185,5 @@ public class EntertainmentHandler implements LinkHandler<Void> {
                 activityRepository.save(activity);
             }
         }
-        return null;
     }
 }

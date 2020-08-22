@@ -13,6 +13,8 @@ import java.util.List;
 @Entity
 public class Building {
 
+    public static Building ANY_BUILDING;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

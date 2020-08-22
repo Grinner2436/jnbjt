@@ -2,7 +2,6 @@ package com.grinner.game.jnbjt.crawler.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,23 +11,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLDecoder;
-import java.text.MessageFormat;
 
 @Slf4j
 @Component
-public class StateCapitalHandler implements LinkHandler<Void> {
+public class StateCapitalHandler implements LinkHandler {
 
     @Autowired
-    private ResidenceHandler residenceHandler;
+    private ResidenceBuildingHandler residenceBuildingHandler;
 
     @Autowired
-    private CraftHandler craftHandler;
+    private CraftBuildingHandler craftBuildingHandler;
 
     @Autowired
-    private EntertainmentHandler entertainmentHandler;
+    private EntertainmentBuildingHandler entertainmentBuildingHandler;
 
     @Override
-    public Void handle(String link, JSONObject context) {
+    public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
@@ -41,7 +39,7 @@ public class StateCapitalHandler implements LinkHandler<Void> {
             residenceBuildings.stream().forEach(building -> {
                 String href = building.attr("href");
                 String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
-                residenceHandler.handle(url,null);
+                residenceBuildingHandler.handle(url,null);
             });
 
             //生产建筑
@@ -50,7 +48,7 @@ public class StateCapitalHandler implements LinkHandler<Void> {
             craftBuildings.stream().forEach(building -> {
                 String href = building.attr("href");
                 String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
-                craftHandler.handle(url,null);
+                craftBuildingHandler.handle(url,null);
             });
 
             //娱乐建筑
@@ -59,9 +57,8 @@ public class StateCapitalHandler implements LinkHandler<Void> {
             entertainmentBuildings.stream().forEach(building -> {
                 String href = building.attr("href");
                 String url = EntranceHandler.WIKI_SITE + URLDecoder.decode(href);
-                entertainmentHandler.handle(url,null);
+                entertainmentBuildingHandler.handle(url,null);
             });
         }
-        return null;
     }
 }

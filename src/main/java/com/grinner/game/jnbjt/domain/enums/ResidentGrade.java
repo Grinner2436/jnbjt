@@ -15,4 +15,13 @@ public enum  ResidentGrade {
         this.description = description;
         this.level = level;
     }
+
+    public static ResidentGrade getResidentGrade(String description) {
+        for(ResidentGrade residentGrade : ResidentGrade.values()){
+            if(residentGrade.description.equals(description)){
+                return residentGrade;
+            }
+        }
+        return Remarkable;
+    }
 }

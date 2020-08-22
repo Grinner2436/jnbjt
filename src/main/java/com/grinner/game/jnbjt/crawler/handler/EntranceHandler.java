@@ -15,15 +15,21 @@ import java.text.MessageFormat;
 
 @Slf4j
 @Component
-public class EntranceHandler implements LinkHandler<Void> {
+public class EntranceHandler implements LinkHandler {
 
     public static final String WIKI_SITE = "https://wiki.biligame.com";
 
     @Autowired
     private StateCapitalHandler stateCapitalHandler;
 
+    @Autowired
+    private ResidenceListHandler residenceListHandler;
+
+    @Autowired
+    private TreasureListHandler treasureListHandler;
+
     @Override
-    public Void handle(String link, JSONObject context) {
+    public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
@@ -40,6 +46,17 @@ public class EntranceHandler implements LinkHandler<Void> {
                 stateCapitalHandler.handle(uri,null);
             });
         }
-        return null;
+
+        //居民
+        {
+            String uri = "https://wiki.biligame.com/jiangnan/角色图鉴";
+            residenceListHandler.handle(uri,null);
+        }
+
+        //珍宝
+        {
+            String uri = "https://wiki.biligame.com/jiangnan/珍宝图鉴";
+            treasureListHandler.handle(uri, null);
+        }
     }
 }

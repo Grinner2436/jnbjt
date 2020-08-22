@@ -15,6 +15,15 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class AttributeProperty {
 
+    public AttributeProperty() {
+
+    }
+    public AttributeProperty(Profession profession, AttrbuiteLevel attrbuiteLevel, Integer maxAttrbuiteVal) {
+        this.profession = profession;
+        this.attrbuiteLevel = attrbuiteLevel;
+        this.maxAttrbuiteVal = maxAttrbuiteVal;
+    }
+
     @Enumerated(EnumType.STRING)
     private Profession profession;
 

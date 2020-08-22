@@ -9,5 +9,6 @@ public enum Job {
     Farm,
     Craft,
     Finance,
-    Adventure;
+    Adventure,
+    Any;
 }

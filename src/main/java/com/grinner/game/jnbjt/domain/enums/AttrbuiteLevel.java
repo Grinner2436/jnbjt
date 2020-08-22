@@ -18,4 +18,13 @@ public enum AttrbuiteLevel {
         this.description = description;
         this.level = level;
     }
+
+    public static AttrbuiteLevel getAttrbuiteLevel(String name) {
+        for(AttrbuiteLevel attrbuiteLevel : AttrbuiteLevel.values()){
+            if(attrbuiteLevel.description.equals(name)){
+                return attrbuiteLevel;
+            }
+        }
+        return Bad;
+    }
 }

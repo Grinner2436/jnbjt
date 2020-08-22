@@ -1,5 +1,6 @@
 package com.grinner.game.jnbjt.domain.relation;
 
+import com.grinner.game.jnbjt.domain.entity.TalentStage;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.entity.Treasure;
 import com.grinner.game.jnbjt.domain.entity.TreasureLevel;
@@ -35,4 +36,9 @@ public class TreasureProperty {
 
     @ElementCollection
     private Map<Profession, Integer> attributeValues;
+
+
+    @OneToOne
+    @JoinColumn(name = "talent_stage")
+    private TalentStage talentStage;
 }

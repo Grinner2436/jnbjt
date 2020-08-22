@@ -1,5 +1,7 @@
 package com.grinner.game.jnbjt.domain.entity;
 
+import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
+import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,27 +9,26 @@ import javax.persistence.*;
 /**
  * 发挥优势
  */
-@Data
 @Entity
-public class Enhancement {
+public abstract class Enhancement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    //发生条件
-    @OneToOne
-    @JoinColumn(name = "qualification_id")
-    private Qualification qualification;
+    @ManyToOne
+    @JoinColumn(name = "talent_stage_id")
+    private TalentStage talentStage;
 
-    //作用形式
+    //作用资源
     @OneToOne
     @JoinColumn(name = "asset_id")
-    private Asset asset;
+    protected Asset asset;
 
-//    @OneToOne
-//    @JoinColumn(name = "formula_id")
-    private Formula formula;
+    @Embedded
+    protected EnhancementQualification qualification;
 
-    private Integer factor;
+    @Embedded
+    protected EnhancementOperation operation;
+
+    public abstract void operate(Activity activity, ResidentProperty residentProperty, TreasureProperty treasureProperty);
 }

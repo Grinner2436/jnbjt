@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class CraftHandler implements LinkHandler<Void> {
+public class CraftBuildingHandler implements LinkHandler {
 
     @Autowired
     private StateCapitalRepository stateCapitalRepository;
@@ -83,17 +83,17 @@ public class CraftHandler implements LinkHandler<Void> {
         buildingTypeMap.put("",BuildingType.Adventure);
     }
     @Override
-    public Void handle(String link, JSONObject context) {
+    public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
 
-        Building building = new Building();
         String buildingName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
         boolean buildingExists = buildingRepository.existsByName(buildingName);
         if(buildingExists){
-            return null;
+            return;
         }
+        Building building = new Building();
         building.setName(buildingName);
 
         building.setBuildingType(BuildingType.Production);
@@ -111,13 +111,12 @@ public class CraftHandler implements LinkHandler<Void> {
                     String stateCapitalName = cityElement.attr("title");
                     //拿出州府ID做关联
                     StateCapital stateCapital = stateCapitalRepository.findByName(stateCapitalName);
-                    if (stateCapital != null) {
-                        stateCapitals.add(stateCapital);
-                    }else {
+                    if (stateCapital == null) {
                         stateCapital = new StateCapital();
                         stateCapital.setName(stateCapitalName);
                         stateCapitalRepository.save(stateCapital);
                     }
+                    stateCapitals.add(stateCapital);
                 }
                 building.setStateCapitals(stateCapitals);
 
@@ -133,7 +132,7 @@ public class CraftHandler implements LinkHandler<Void> {
             {
                 Activity activity = new Activity();
                 //建造建筑总投资
-                List<AssetProperty> investments = new ArrayList<>();
+                Map<Asset, AssetProperty> investments = new HashMap<>();
                 //建造建筑时间投资
                 {
                     String assetName = buildingProperties.get(2).select("img").attr("alt").replaceAll(".png", "");
@@ -175,10 +174,10 @@ public class CraftHandler implements LinkHandler<Void> {
                         assetRepository.save(asset);
                     }
                     AssetProperty assetProperty = new AssetProperty();
-                    assetProperty.setAsset(asset);
+                    //assetProperty.setAsset(asset);
                     assetProperty.setAmount(minuteAmount);
                     assetProperty.setAssetName(asset.getName());
-                    investments.add(assetProperty);
+                    investments.put(asset, assetProperty);
                 }
                 //建造建筑实物投资
                 List<Node> investmentElementsOfCreate = buildingProperties.get(4).children().get(0).childNodes();
@@ -201,10 +200,10 @@ public class CraftHandler implements LinkHandler<Void> {
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                     index++;
                     AssetProperty assetProperty = new AssetProperty();
-                    assetProperty.setAsset(asset);
+                    //assetProperty.setAsset(asset);
                     assetProperty.setAmount(amount);
                     assetProperty.setAssetName(asset.getName());
-                    investments.add(assetProperty);
+                    investments.put(asset, assetProperty);
 
                 }
                 Investment investment = new Investment();
@@ -251,7 +250,7 @@ public class CraftHandler implements LinkHandler<Void> {
                     String activityName = activityNameBuffer.toString();
 
                     //升级建筑活动总投资
-                    List<AssetProperty> investments = new ArrayList<>();
+                    Map<Asset, AssetProperty> investments = new HashMap<>();
                     //升级建筑活动时间投资
                     {
                         String sourceTimeString = tds.get(5).text().replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
@@ -293,10 +292,10 @@ public class CraftHandler implements LinkHandler<Void> {
                             assetRepository.save(asset);
                         }
                         AssetProperty assetProperty = new AssetProperty();
-                        assetProperty.setAsset(asset);
+                        //assetProperty.setAsset(asset);
                         assetProperty.setAmount(minuteAmount);
                         assetProperty.setAssetName(asset.getName());
-                        investments.add(assetProperty);
+                        investments.put(asset, assetProperty);
                     }
 
                     //升级建筑活动实物投资
@@ -319,10 +318,10 @@ public class CraftHandler implements LinkHandler<Void> {
                         Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
                                 .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                         AssetProperty assetProperty = new AssetProperty();
-                        assetProperty.setAsset(asset);
+                        //assetProperty.setAsset(asset);
                         assetProperty.setAmount(amount);
                         assetProperty.setAssetName(asset.getName());
-                        investments.add(assetProperty);
+                        investments.put(asset, assetProperty);
                     }
                     Investment investment = new Investment();
                     investment.setAssetProperties(investments);
@@ -338,7 +337,6 @@ public class CraftHandler implements LinkHandler<Void> {
                 }
             }
         }
-        return null;
     }
     private void generalManagementAvtivity(Elements tds, Building building, Profession profession){
         {
@@ -347,7 +345,7 @@ public class CraftHandler implements LinkHandler<Void> {
             String activityName = tds.get(0).text().replaceAll("\\p{Zs}","");
 
             //经营活动总投资
-            List<AssetProperty> investments = new ArrayList<>();
+            Map<Asset, AssetProperty> investments = new HashMap<>();
             //经营活动时间投资
             {
                 String sourceTimeString = tds.get(2).text().replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
@@ -389,10 +387,10 @@ public class CraftHandler implements LinkHandler<Void> {
                     assetRepository.save(asset);
                 }
                 AssetProperty assetProperty = new AssetProperty();
-                assetProperty.setAsset(asset);
+                //assetProperty.setAsset(asset);
                 assetProperty.setAmount(minuteAmount);
                 assetProperty.setAssetName(asset.getName());
-                investments.add(assetProperty);
+                investments.put(asset, assetProperty);
             }
 
             //经营活动实物投资
@@ -414,17 +412,17 @@ public class CraftHandler implements LinkHandler<Void> {
                 Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
-                assetProperty.setAsset(asset);
+                //assetProperty.setAsset(asset);
                 assetProperty.setAmount(amount);
                 assetProperty.setAssetName(asset.getName());
-                investments.add(assetProperty);
+                investments.put(asset, assetProperty);
             }
             Investment investment = new Investment();
             investment.setAssetProperties(investments);
             investmentRepository.save(investment);
 
             //经营活动回报
-            List<AssetProperty> rewards = new ArrayList<>();
+            Map<Asset, AssetProperty> rewards = new HashMap<>();
             List<Node> finaceItemReward = tds.get(1).children().get(0).childNodes();
             finaceItemReward = HtmlUtils.trim(finaceItemReward);
             for (int index = 0; index < finaceItemReward.size(); ) {
@@ -442,10 +440,10 @@ public class CraftHandler implements LinkHandler<Void> {
                 Integer amount = Integer.valueOf(finaceItemReward.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
-                assetProperty.setAsset(asset);
+                //assetProperty.setAsset(asset);
                 assetProperty.setAmount(amount);
                 assetProperty.setAssetName(asset.getName());
-                rewards.add(assetProperty);
+                rewards.put(asset, assetProperty);
             }
             Profit profit = new Profit();
             profit.setAssetProperties(rewards);
@@ -465,7 +463,7 @@ public class CraftHandler implements LinkHandler<Void> {
             String activityName = "税收：" + building.getName();
 
             //经营活动总投资
-            List<AssetProperty> investments = new ArrayList<>();
+            Map<Asset, AssetProperty> investments = new HashMap<>();
             //经营活动时间投资
             int minuteAmount = 0;
             {
@@ -508,17 +506,17 @@ public class CraftHandler implements LinkHandler<Void> {
                     assetRepository.save(asset);
                 }
                 AssetProperty assetProperty = new AssetProperty();
-                assetProperty.setAsset(asset);
+                //assetProperty.setAsset(asset);
                 assetProperty.setAmount(minuteAmount);
                 assetProperty.setAssetName(asset.getName());
-                investments.add(assetProperty);
+                investments.put(asset, assetProperty);
             }
             Investment investment = new Investment();
             investment.setAssetProperties(investments);
             investmentRepository.save(investment);
 
             //经营活动回报
-            List<AssetProperty> rewards = new ArrayList<>();
+            Map<Asset, AssetProperty> rewards = new HashMap<>();
             {
                 AssetProperty assetProperty = new AssetProperty();
                 Asset asset = assetRepository.findByName("铜钱");
@@ -527,7 +525,7 @@ public class CraftHandler implements LinkHandler<Void> {
                     asset.setName("铜钱");
                     assetRepository.save(asset);
                 }
-                assetProperty.setAsset(asset);
+                //assetProperty.setAsset(asset);
 
                 String sourceProfitString = tds.get(0).text().replaceAll("\\p{Zs}","");
                 {
@@ -541,7 +539,7 @@ public class CraftHandler implements LinkHandler<Void> {
                     }
                 }
                 assetProperty.setAssetName(asset.getName());
-                rewards.add(assetProperty);
+                rewards.put(asset, assetProperty);
             }
 
             Profit profit = new Profit();

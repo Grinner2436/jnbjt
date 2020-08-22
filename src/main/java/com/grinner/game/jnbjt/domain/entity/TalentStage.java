@@ -3,6 +3,7 @@ package com.grinner.game.jnbjt.domain.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * 天赋成长阶段
@@ -25,11 +26,6 @@ public class TalentStage {
 
     private Integer fragmentVolume;
 
-    @OneToOne
-    @JoinColumn(name = "enhancement_id")
-    private Enhancement enhancement;
-
-    @OneToOne
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
+    @OneToMany
+    private List<Enhancement> enhancements;
 }

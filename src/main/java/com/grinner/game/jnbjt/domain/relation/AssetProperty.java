@@ -12,10 +12,10 @@ import javax.persistence.*;
 @Data
 @Embeddable
 public class AssetProperty {
-
-    @OneToOne
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
+//
+//    @OneToOne
+//    @JoinColumn(name = "asset_id")
+//    private Asset asset;
 
     @JoinColumn(table = "asset",name = "asset_name",columnDefinition = "name")
     private String assetName;

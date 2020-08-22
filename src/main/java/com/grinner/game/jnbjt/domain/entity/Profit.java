@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 产出
@@ -23,5 +24,5 @@ public class Profit {
     private Activity activity;
 
     @ElementCollection
-    private List<AssetProperty> assetProperties;
+    private Map<Asset, AssetProperty> assetProperties;
 }

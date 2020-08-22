@@ -19,14 +19,14 @@ public class Resident extends People{
     @Enumerated(EnumType.STRING)
     private ResidentGrade grade;
 
-    @OneToOne(mappedBy = "resident")
+    @OneToOne
+    @JoinColumn(name = "talent_id")
     private Talent talent;
 
     @ElementCollection
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Profession, AttributeProperty> attributes;
 
-    @ElementCollection
-    @MapKeyColumn(unique = false)
+    @ManyToMany
     private List<Book> preferredbooks;
 }

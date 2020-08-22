@@ -2,6 +2,7 @@ package com.grinner.game.jnbjt.domain.entity;
 
 import lombok.Data;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,9 @@ import javax.persistence.Id;
 @Data
 @Entity
 public class Asset {
+
+    public static Asset TIME;
+    public static Asset ANYTHING;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -20,8 +20,4 @@ public class Treasure {
     @OneToOne
     @JoinColumn(name = "talent_id")
     private Talent talent;
-
-    @OneToOne
-    @JoinColumn(name = "talent_stage")
-    private TalentStage talentStage;
 }
