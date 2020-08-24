@@ -1,6 +1,7 @@
 package com.grinner.game.jnbjt.domain.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * 天赋成长阶段
  */
 @Data
+@ToString(exclude = {"enhancements","talent"})
 @Entity
 public class TalentStage {
 
@@ -25,6 +27,8 @@ public class TalentStage {
     private String description;
 
     private Integer fragmentVolume;
+
+    private Boolean updated;
 
     @OneToMany
     private List<Enhancement> enhancements;

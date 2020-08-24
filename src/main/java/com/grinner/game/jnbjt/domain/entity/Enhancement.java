@@ -3,12 +3,15 @@ package com.grinner.game.jnbjt.domain.entity;
 import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
 import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 /**
  * 发挥优势
  */
+@Data
+@ToString(exclude = {"talentStage", "asset"})
 @Entity
 public abstract class Enhancement {
 

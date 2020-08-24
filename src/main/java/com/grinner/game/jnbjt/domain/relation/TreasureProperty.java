@@ -28,15 +28,16 @@ public class TreasureProperty {
     @JoinColumn(name = "resident_property_id")
     private ResidentProperty residentProperty;
 
+    //珍宝等级
     @OneToOne
     @JoinColumn(name = "treasure_level")
     private TreasureLevel treasureLevel;
 
+    //珍宝本级经验
     private Integer treasureLevelStage;
 
     @ElementCollection
     private Map<Profession, Integer> attributeValues;
-
 
     @OneToOne
     @JoinColumn(name = "talent_stage")

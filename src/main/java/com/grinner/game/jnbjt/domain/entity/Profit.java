@@ -20,6 +20,8 @@ public class Profit {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    private String name;
+
     @OneToOne(mappedBy = "profit")
     private Activity activity;
 

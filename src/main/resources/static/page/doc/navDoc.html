@@ -32,8 +32,8 @@
 	<pre class="layui-code" lay-title="JavaScript">
 		function getData(json){
 		    $.get("接口路径",function(data){
-		        if(json == "contentManagement"){   <i class="layui-blue">//此处即实际开发中传递的参数</i>
-		            dataStr = data.contentManagement;   <i class="layui-blue">//获取到当前顶级菜单下的子菜单渲染到左侧</i>
+		        if(json == "enteringInfo"){   <i class="layui-blue">//此处即实际开发中传递的参数</i>
+		            dataStr = data.enteringInfo;   <i class="layui-blue">//获取到当前顶级菜单下的子菜单渲染到左侧</i>
 		            tab.render();
 		        }
 		    })

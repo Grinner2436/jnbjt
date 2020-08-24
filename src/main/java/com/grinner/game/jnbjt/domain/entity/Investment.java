@@ -21,6 +21,8 @@ public class Investment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    private String name;
+
     @OneToOne(mappedBy = "investment")
     private Activity activity;
 

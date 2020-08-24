@@ -1,15 +1,15 @@
 package com.grinner.game.jnbjt.crawler.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.grinner.game.jnbjt.dao.jpa.BookRepository;
-import com.grinner.game.jnbjt.dao.jpa.ResidentRepository;
-import com.grinner.game.jnbjt.domain.entity.Book;
-import com.grinner.game.jnbjt.domain.entity.Resident;
+import com.grinner.game.jnbjt.dao.jpa.*;
+import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.AttrbuiteLevel;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.enums.ResidentGrade;
 import com.grinner.game.jnbjt.domain.relation.AttributeProperty;
+import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -33,6 +33,18 @@ public class ResidenceHandler implements LinkHandler {
     @Autowired
     private ResidentRepository residentRepository;
 
+    @Autowired
+    private ResidentPropertyRepository residentPropertyRepository;
+
+    @Autowired
+    private TalentRepository talentRepository;
+
+    @Autowired
+    private TalentStageRepository talentStageRepository;
+
+    @Autowired
+    private ResidentLevelRepository residentLevelRepository;
+
     @Override
     public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
@@ -40,11 +52,10 @@ public class ResidenceHandler implements LinkHandler {
         Document document = Jsoup.parse(data);
 
         String residenceName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
-        boolean residentExists = residentRepository.existsByName(residenceName);
-        if(residentExists){
-            return;
+        Resident resident = residentRepository.findByName(residenceName);
+        if(resident == null){
+            resident = new Resident();
         }
-        Resident resident = new Resident();
         resident.setName(residenceName);
 
         String gradeName = document.select("#mw-normal-catlinks li:last-child a").text();
@@ -69,10 +80,11 @@ public class ResidenceHandler implements LinkHandler {
             }
             resident.setPreferredbooks(books);
             //关联初始属性
-            Map<Profession, AttributeProperty> attributes = new HashMap<>();
+            Map<Profession, AttributeProperty> minAttributes = new HashMap<>();
+            Map<Profession, AttributeProperty> maxAttributes = new HashMap<>();
             for (int rowNum = 1;rowNum <= 5; rowNum++) {
-                Element buildRow = residentProperties.get(rowNum);
-                Elements columns = buildRow.children();
+                Element attributeRow = residentProperties.get(rowNum);
+                Elements columns = attributeRow.children();
                 //职业
                 String professionName = columns.get(0).text().replaceAll("\\p{Zs}","");
                 Profession profession = Profession.getProfession(professionName);
@@ -80,12 +92,95 @@ public class ResidenceHandler implements LinkHandler {
                 String attrbuiteLevelName = columns.get(1).text().replaceAll("\\p{Zs}","");
                 AttrbuiteLevel attrbuiteLevel = AttrbuiteLevel.getAttrbuiteLevel(attrbuiteLevelName);
                 //初始值
-                Integer attrbuiteValue = Integer.valueOf(columns.get(2).text().replaceAll("\\p{Zs}",""));
-                AttributeProperty attributeProperty = new AttributeProperty(profession, attrbuiteLevel,attrbuiteValue);
-                attributes.put(profession, attributeProperty);
+                String minAttribute = columns.get(2).text().replaceAll("\\p{Zs}","");
+                Integer minAttrbuiteValue = Integer.valueOf(0);
+                if(StringUtils.isBlank(minAttribute)){
+                    minAttrbuiteValue = Integer.parseInt(minAttribute);
+                }
+                AttributeProperty minAttributeProperty = new AttributeProperty(profession, attrbuiteLevel,minAttrbuiteValue);
+                minAttributes.put(profession, minAttributeProperty);
+                //满级值
+                String maxAttribute = columns.get(3).text().replaceAll("\\p{Zs}","");
+                Integer maxAttrbuiteValue = Integer.valueOf(0);
+                if(StringUtils.isNotBlank(maxAttribute)){
+                    maxAttrbuiteValue = Integer.parseInt(maxAttribute);
+                }
+                AttributeProperty maxAttributeProperty = new AttributeProperty(profession, attrbuiteLevel,maxAttrbuiteValue);
+                maxAttributes.put(profession, maxAttributeProperty);
             }
-            resident.setAttributes(attributes);
+            String talentName = document.select("#star2 th").text().replaceAll("\\p{Zs}","").replaceAll("天赋：","");
+            Talent talent = talentRepository.findByName(talentName);
+            if(talent == null){
+                talent = new Talent();
+            }
+            talent.setName(talentName);
+            talentRepository.save(talent);
+
+            TalentStage currentTalentStage = null;
+            for(int i = 0;i <= 4 ;i++){
+                if(resident.getGrade() == ResidentGrade.Legendary && i < 2){//天角色直接2阶
+                    continue;
+                }
+                if(resident.getGrade() == ResidentGrade.Excellent && i < 1){//候角色直接1阶
+                    continue;
+                }
+                String talentStageDescription = document.select("#star" + i + " td").html();
+                TalentStage talentStage = talentStageRepository.findByTalentAndLevel(talent, Integer.valueOf(i));
+                if(talentStage == null){
+                    talentStage =new TalentStage();
+                }
+                talentStage.setDescription(talentStageDescription);
+                talentStage.setTalent(talent);
+                talentStage.setLevel(Integer.valueOf(i));
+                talentStage.setUpdated(Boolean.FALSE);
+                talentStageRepository.save(talentStage);
+                if(resident.getGrade() == ResidentGrade.Legendary && i == 2){
+                    currentTalentStage = talentStage;
+                }
+                if(resident.getGrade() == ResidentGrade.Excellent && i == 1){
+                    currentTalentStage = talentStage;
+                }
+                if(resident.getGrade() == ResidentGrade.Wellknown && i == 0){
+                    currentTalentStage = talentStage;
+                }
+                if(resident.getGrade() == ResidentGrade.Remarkable && i == 0){
+                    currentTalentStage = talentStage;
+                }
+            }
+
+            resident.setMinAttributes(minAttributes);
+            resident.setMaxAttributes(maxAttributes);
+            resident.setTalent(talent);
             residentRepository.save(resident);
+
+            ResidentProperty residentProperty = residentPropertyRepository.findByResident(resident);
+            if(residentProperty == null){
+                residentProperty = new ResidentProperty();
+            }
+            residentProperty.setResident(resident);
+            residentProperty.setTalentStage(currentTalentStage);
+            int level = 0;
+            if(resident.getGrade() == ResidentGrade.Legendary || resident.getName().equals("文徵明")){
+                level = 16;
+            }
+            if(resident.getGrade() == ResidentGrade.Excellent){
+                level = 11;
+            }
+            if(resident.getGrade() == ResidentGrade.Wellknown){
+                level = 6;
+            }
+            if(resident.getGrade() == ResidentGrade.Remarkable){
+                level = 2;
+            }
+            ResidentLevel residentLevel = residentLevelRepository.findByLevel(Integer.valueOf(level));
+            if(residentLevel == null){
+                residentLevel = new ResidentLevel();
+                residentLevel.setLevel(Integer.valueOf(level));
+                residentLevelRepository.save(residentLevel);
+            }
+            residentProperty.setResidentLevel(residentLevel);
+            residentProperty.setAttributeValues(minAttributes);
+            residentPropertyRepository.save(residentProperty);
         }
     }
 }

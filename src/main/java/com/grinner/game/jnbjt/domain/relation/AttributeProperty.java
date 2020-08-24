@@ -21,7 +21,7 @@ public class AttributeProperty {
     public AttributeProperty(Profession profession, AttrbuiteLevel attrbuiteLevel, Integer maxAttrbuiteVal) {
         this.profession = profession;
         this.attrbuiteLevel = attrbuiteLevel;
-        this.maxAttrbuiteVal = maxAttrbuiteVal;
+        this.attributeVal = attributeVal;
     }
 
     @Enumerated(EnumType.STRING)
@@ -30,5 +30,5 @@ public class AttributeProperty {
     @Enumerated(EnumType.STRING)
     private AttrbuiteLevel attrbuiteLevel;
 
-    private Integer maxAttrbuiteVal;
+    private Integer attributeVal;
 }

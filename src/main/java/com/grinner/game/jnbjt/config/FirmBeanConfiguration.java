@@ -22,30 +22,24 @@ public class FirmBeanConfiguration {
     @PostConstruct
     public void init(){
         {
-            Asset time = null;
-                Optional<Asset> optionalAsset = assetRepository.findById(Integer.valueOf(0));
-                if(!optionalAsset.isPresent()){
-                    time = new Asset();
-                    time.setId(Integer.valueOf(0));
-                    time.setName("时间");
-                    time.setValue(Integer.valueOf(0));
-                    assetRepository.save(time);
-                }else {
-                    time = optionalAsset.get();
-                }
-                Asset.TIME = time;
+            Asset time = assetRepository.findByName("时间");
+            if(time == null){
+                time = new Asset();
+                time.setId(Integer.valueOf(0));
+                time.setName("时间");
+                time.setValue(Integer.valueOf(0));
+                assetRepository.save(time);
+            }
+            Asset.TIME = time;
         }
         {
-            Asset anything = null;
-            Optional<Asset> optionalAsset = assetRepository.findById(Integer.valueOf(-1));
-            if(!optionalAsset.isPresent()){
+            Asset anything = assetRepository.findByName("任何资源");
+            if(anything == null){
                 anything = new Asset();
                 anything.setId(Integer.valueOf(-1));
                 anything.setName("任何资源");
                 anything.setValue(Integer.valueOf(-1));
                 assetRepository.save(anything);
-            }else {
-                anything = optionalAsset.get();
             }
             Asset.ANYTHING = anything;
         }

@@ -53,11 +53,10 @@ public class EntertainmentBuildingHandler implements LinkHandler {
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
 
-        Building building = new Building();
         String buildingName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
-        boolean buildingExists = buildingRepository.existsByName(buildingName);
-        if(buildingExists){
-            return;
+        Building building = buildingRepository.findByName(buildingName);
+        if(building == null){
+            building = new Building();
         }
         building.setName(buildingName);
 
@@ -95,7 +94,13 @@ public class EntertainmentBuildingHandler implements LinkHandler {
 
             //建造此建筑的活动
             {
-                Activity activity = new Activity();
+                String actityDescription= "建造建筑：1级" + buildingName;
+                Activity activity = activityRepository.findByDescription(actityDescription);
+                if(activity == null){
+                    activity = new Activity();
+                }
+                activity.setDescription(actityDescription);
+
                 //建造建筑总投资
                 Map<Asset, AssetProperty> investments = new HashMap<>();
                 //建造建筑时间投资
@@ -171,12 +176,15 @@ public class EntertainmentBuildingHandler implements LinkHandler {
                     investments.put(asset, assetProperty);
 
                 }
-                Investment investment = new Investment();
+                Investment investment = investmentRepository.findByName(activity.getDescription() + "的投资");
+                if(investment == null){
+                    investment = new Investment();
+                }
+                investment.setName(activity.getDescription() + "的投资");
                 investment.setAssetProperties(investments);
                 investmentRepository.save(investment);
 
                 //建造建筑活动
-                activity.setDescription("建造建筑：1级" + buildingName);
                 activity.setBuilding(building);
                 activity.setProfit(null);
                 activity.setInvestment(investment);

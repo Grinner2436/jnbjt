@@ -33,19 +33,19 @@ public class EntranceHandler implements LinkHandler {
         RestTemplate restTemplate = new RestTemplate();
         String data = restTemplate.getForObject(link,String.class);
         Document document = Jsoup.parse(data);
-        //州府
-        Elements stateCapitals = document.select(".wiki-menu-li-1:nth-child(2) .wiki-menu-li-2 a");
-        if(!stateCapitals.isEmpty()){
-            stateCapitals.stream().forEach(stateCapital -> {
-                String zhoufuName = stateCapital.text();
-                String uri = WIKI_SITE + URLDecoder.decode(stateCapital.attr("href"));
-                //州府解析器
-                if(StringUtils.isBlank(zhoufuName) || StringUtils.isBlank(uri)){
-                    String errorMsg = MessageFormat.format("州府信息有误，name：{1}，uri：{2}",zhoufuName, uri);
-                }
-                stateCapitalHandler.handle(uri,null);
-            });
-        }
+//        //州府
+//        Elements stateCapitals = document.select(".wiki-menu-li-1:nth-child(2) .wiki-menu-li-2 a");
+//        if(!stateCapitals.isEmpty()){
+//            stateCapitals.stream().forEach(stateCapital -> {
+//                String zhoufuName = stateCapital.text();
+//                String uri = WIKI_SITE + URLDecoder.decode(stateCapital.attr("href"));
+//                //州府解析器
+//                if(StringUtils.isBlank(zhoufuName) || StringUtils.isBlank(uri)){
+//                    String errorMsg = MessageFormat.format("州府信息有误，name：{1}，uri：{2}",zhoufuName, uri);
+//                }
+//                stateCapitalHandler.handle(uri,null);
+//            });
+//        }
 
         //居民
         {

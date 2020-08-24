@@ -33,6 +33,10 @@ layui.use(['bodyTab','form','element','layer','jquery'],function(){
                 dataStr = data.seraphApi;
                 //重新渲染左侧菜单
                 tab.render();
+			}else if(json == "enteringInfo"){
+                dataStr = data.enteringInfo;
+                //重新渲染左侧菜单
+                tab.render();
             }
 		})
 	}
@@ -63,7 +67,7 @@ layui.use(['bodyTab','form','element','layer','jquery'],function(){
 	})
 
 	//通过顶部菜单获取左侧二三级菜单   注：此处只做演示之用，实际开发中通过接口传参的方式获取导航数据
-	getData("contentManagement");
+	getData("enteringInfo");
 
 	//手机设备的简单适配
     $('.site-tree-mobile').on('click', function(){

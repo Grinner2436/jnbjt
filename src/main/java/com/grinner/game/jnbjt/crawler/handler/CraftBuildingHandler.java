@@ -89,11 +89,10 @@ public class CraftBuildingHandler implements LinkHandler {
         Document document = Jsoup.parse(data);
 
         String buildingName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
-        boolean buildingExists = buildingRepository.existsByName(buildingName);
-        if(buildingExists){
-            return;
+        Building building = buildingRepository.findByName(buildingName);
+        if(building == null){
+            building = new Building();
         }
-        Building building = new Building();
         building.setName(buildingName);
 
         building.setBuildingType(BuildingType.Production);
@@ -130,7 +129,12 @@ public class CraftBuildingHandler implements LinkHandler {
 
             //建造此建筑的活动
             {
-                Activity activity = new Activity();
+                String actityDescription= "建造建筑：1级" + buildingName;
+                Activity activity = activityRepository.findByDescription(actityDescription);
+                if(activity == null){
+                    activity = new Activity();
+                }
+                activity.setDescription(actityDescription);
                 //建造建筑总投资
                 Map<Asset, AssetProperty> investments = new HashMap<>();
                 //建造建筑时间投资
@@ -206,12 +210,14 @@ public class CraftBuildingHandler implements LinkHandler {
                     investments.put(asset, assetProperty);
 
                 }
-                Investment investment = new Investment();
+                Investment investment = investmentRepository.findByName(activity.getDescription() + "的投资");
+                if(investment == null){
+                    investment = new Investment();
+                }
                 investment.setAssetProperties(investments);
                 investmentRepository.save(investment);
 
                 //建造建筑活动
-                activity.setDescription("建造建筑：1级" + buildingName);
                 activity.setBuilding(building);
                 activity.setProfit(null);
                 activity.setInvestment(investment);
@@ -241,14 +247,17 @@ public class CraftBuildingHandler implements LinkHandler {
                 }
                 //升级此建筑的活动
                 {
-                    Activity activity = new Activity();
                     //升级建筑活动名称
                     StringBuffer activityNameBuffer = new StringBuffer("升级建筑：")
                             .append(level).append("级").append(buildingName)
                             .append(" -> ")
                             .append(++level).append("级").append(buildingName);
                     String activityName = activityNameBuffer.toString();
-
+                    Activity activity = activityRepository.findByDescription(activityName);
+                    if(activity == null){
+                        activity = new Activity();
+                    }
+                    activity.setDescription(activityName);
                     //升级建筑活动总投资
                     Map<Asset, AssetProperty> investments = new HashMap<>();
                     //升级建筑活动时间投资
@@ -327,7 +336,6 @@ public class CraftBuildingHandler implements LinkHandler {
                     investment.setAssetProperties(investments);
                     investmentRepository.save(investment);
 
-                    activity.setDescription(activityName);
                     activity.setBuilding(building);
                     activity.setProfit(null);
                     activity.setInvestment(investment);
@@ -340,9 +348,14 @@ public class CraftBuildingHandler implements LinkHandler {
     }
     private void generalManagementAvtivity(Elements tds, Building building, Profession profession){
         {
-            Activity activity = new Activity();
             //经营活动名称
             String activityName = tds.get(0).text().replaceAll("\\p{Zs}","");
+            String actityDescription= "商业经营：" + activityName;
+            Activity activity = activityRepository.findByDescription(actityDescription);
+            if(activity == null){
+                activity = new Activity();
+            }
+            activity.setDescription(activityName);
 
             //经营活动总投资
             Map<Asset, AssetProperty> investments = new HashMap<>();
@@ -417,7 +430,10 @@ public class CraftBuildingHandler implements LinkHandler {
                 assetProperty.setAssetName(asset.getName());
                 investments.put(asset, assetProperty);
             }
-            Investment investment = new Investment();
+            Investment investment = investmentRepository.findByName(activity.getDescription() + "的投资");
+            if(investment == null){
+                investment = new Investment();
+            }
             investment.setAssetProperties(investments);
             investmentRepository.save(investment);
 
@@ -445,11 +461,13 @@ public class CraftBuildingHandler implements LinkHandler {
                 assetProperty.setAssetName(asset.getName());
                 rewards.put(asset, assetProperty);
             }
-            Profit profit = new Profit();
+            Profit profit = profitRepository.findByName(activity.getDescription() + "的获利");
+            if(profit == null){
+                profit = new Profit();
+            }
             profit.setAssetProperties(rewards);
             profitRepository.save(profit);
 
-            activity.setDescription("商业经营：" + activityName);
             activity.setBuilding(building);
             activity.setProfit(profit);
             activity.setInvestment(investment);
@@ -511,7 +529,10 @@ public class CraftBuildingHandler implements LinkHandler {
                 assetProperty.setAssetName(asset.getName());
                 investments.put(asset, assetProperty);
             }
-            Investment investment = new Investment();
+            Investment investment = investmentRepository.findByName(activityName + "的投资");
+            if(investment == null){
+                investment = new Investment();
+            }
             investment.setAssetProperties(investments);
             investmentRepository.save(investment);
 
@@ -542,11 +563,17 @@ public class CraftBuildingHandler implements LinkHandler {
                 rewards.put(asset, assetProperty);
             }
 
-            Profit profit = new Profit();
+            Profit profit = profitRepository.findByName(activityName + "的获利");
+            if(profit == null){
+                profit = new Profit();
+            }
             profit.setAssetProperties(rewards);
             profitRepository.save(profit);
 
-            Activity activity = new Activity();
+            Activity activity = activityRepository.findByDescription(activityName);
+            if(activity == null){
+                activity = new Activity();
+            }
             activity.setDescription(activityName);
             activity.setBuilding(building);
             activity.setProfit(profit);

@@ -7,7 +7,6 @@ import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
 import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,9 @@ public class GenericActivityProcessor implements ActivityProcessor {
     public void compute(Activity activity, ResidentProperty residentProperty, TreasureProperty treasureProperty) {
         //初始化人物属性值
         Map<Profession, Integer> finalAttrValue = new HashMap<>();
-        finalAttrValue.putAll(residentProperty.getAttributeValues());
+        residentProperty.getAttributeValues().forEach((profession, attributeProperty) -> {
+            finalAttrValue.put(profession, attributeProperty.getAttributeVal());
+        });
 
         //使用珍宝给人物增强属性
         if (treasureProperty != null){

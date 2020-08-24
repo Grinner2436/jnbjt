@@ -4,5 +4,5 @@ import com.grinner.game.jnbjt.domain.entity.Resident;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ResidentRepository extends JpaRepository<Resident,Integer> {
-    boolean existsByName(String name);
+    Resident findByName(String name);
 }

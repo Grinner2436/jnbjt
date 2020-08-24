@@ -4,7 +4,7 @@ package com.grinner.game.jnbjt.domain.enums;
  */
 public enum  ResidentGrade {
     Legendary("天", 0),
-    Excellent("候",1),
+    Excellent("侯",1),
     Wellknown("卿",2),
     Remarkable("士",3);
 
