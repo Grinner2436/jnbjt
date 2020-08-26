@@ -14,6 +14,8 @@ import javax.persistence.*;
 @Entity
 public class Activity {
 
+    public static Activity ANY_ACTIVITY;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

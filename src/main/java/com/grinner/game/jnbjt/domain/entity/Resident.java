@@ -18,6 +18,8 @@ import java.util.Map;
 @Entity
 public class Resident extends People{
 
+    private String avatar;
+
     @Enumerated(EnumType.STRING)
     private ResidentGrade grade;
 

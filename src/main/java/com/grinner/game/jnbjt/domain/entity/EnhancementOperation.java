@@ -21,8 +21,4 @@ public class EnhancementOperation {
     //操作符
     @Enumerated(EnumType.STRING)
     private Operation operation;
-
-    //作用项目
-    @Enumerated(EnumType.STRING)
-    private OperationTarget operationTarget;
 }

@@ -58,13 +58,14 @@ public class ResidenceHandler implements LinkHandler {
         }
         resident.setName(residenceName);
 
-        String gradeName = document.select("#mw-normal-catlinks li:last-child a").text();
+//        String gradeName = document.select("#mw-normal-catlinks li:last-child a").text();
+        String gradeName = context.getString("grade");
         resident.setGrade(ResidentGrade.getResidentGrade(gradeName));
 
         //数据区
-        Elements tables = document.select(".main .row .col-lg-8");
+        Elements tables = document.select(".row>div>table");
         if(!tables.isEmpty()) {
-            Elements residentProperties = tables.first().child(0).select(".wikitable tbody tr");
+            Elements residentProperties = tables.get(2).select(".wikitable tbody tr");
             //关联书籍
             Elements bookElements = residentProperties.get(6).select("img");
             List<Book> books = new ArrayList<>();
@@ -103,7 +104,11 @@ public class ResidenceHandler implements LinkHandler {
                 String maxAttribute = columns.get(3).text().replaceAll("\\p{Zs}","");
                 Integer maxAttrbuiteValue = Integer.valueOf(0);
                 if(StringUtils.isNotBlank(maxAttribute)){
-                    maxAttrbuiteValue = Integer.parseInt(maxAttribute);
+                    try {
+                        maxAttrbuiteValue = Integer.parseInt(maxAttribute);
+                    }catch (Exception e){
+//                        System.out.println("数字格式有误：" + maxAttribute +link);
+                    }
                 }
                 AttributeProperty maxAttributeProperty = new AttributeProperty(profession, attrbuiteLevel,maxAttrbuiteValue);
                 maxAttributes.put(profession, maxAttributeProperty);
@@ -151,6 +156,10 @@ public class ResidenceHandler implements LinkHandler {
             resident.setMinAttributes(minAttributes);
             resident.setMaxAttributes(maxAttributes);
             resident.setTalent(talent);
+            String avatar = context.getString("avatar");
+            if(StringUtils.isNotBlank(avatar)){
+                resident.setAvatar(avatar);
+            }
             residentRepository.save(resident);
 
             ResidentProperty residentProperty = residentPropertyRepository.findByResident(resident);

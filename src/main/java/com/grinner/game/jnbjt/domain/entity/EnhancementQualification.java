@@ -14,6 +14,10 @@ import javax.persistence.*;
 public class EnhancementQualification {
 
     @OneToOne
+    @JoinColumn(name = "activity_id")
+    private Activity activity;
+
+    @OneToOne
     @JoinColumn(name = "building_id")
     private Building building;
 

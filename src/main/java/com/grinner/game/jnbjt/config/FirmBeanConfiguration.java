@@ -1,7 +1,9 @@
 package com.grinner.game.jnbjt.config;
 
+import com.grinner.game.jnbjt.dao.jpa.ActivityRepository;
 import com.grinner.game.jnbjt.dao.jpa.AssetRepository;
 import com.grinner.game.jnbjt.dao.jpa.BuildingRepository;
+import com.grinner.game.jnbjt.domain.entity.Activity;
 import com.grinner.game.jnbjt.domain.entity.Asset;
 import com.grinner.game.jnbjt.domain.entity.Building;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class FirmBeanConfiguration {
 
     @Autowired
     private BuildingRepository buildingRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
 
     @PostConstruct
     public void init(){
@@ -44,17 +49,24 @@ public class FirmBeanConfiguration {
             Asset.ANYTHING = anything;
         }
         {
-            Building anyBuilding = null;
-            Optional<Building> optionalBuilding = buildingRepository.findById(Integer.valueOf(-1));
-            if(!optionalBuilding.isPresent()){
+            Building anyBuilding = buildingRepository.findByName("任意建筑");
+            if(anyBuilding == null){
                 anyBuilding = new Building();
                 anyBuilding.setId(Integer.valueOf(-1));
                 anyBuilding.setName("任意建筑");
                 buildingRepository.save(anyBuilding);
-            }else {
-                anyBuilding = optionalBuilding.get();
             }
             Building.ANY_BUILDING = anyBuilding;
+        }
+        {
+            Activity anyActivity = activityRepository.findByDescription("任何活动");
+            if(anyActivity == null){
+                anyActivity = new Activity();
+                anyActivity.setId(Integer.valueOf(-1));
+                anyActivity.setDescription("任何活动");
+                activityRepository.save(anyActivity);
+            }
+            Activity.ANY_ACTIVITY = anyActivity;
         }
     }
 }

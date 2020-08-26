@@ -306,7 +306,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                     investment.setAssetProperties(investments);
                     investmentRepository.save(investment);
 
-
+                    activity.setDescription(activityName);
                     activity.setBuilding(building);
                     activity.setProfit(null);
                     activity.setInvestment(investment);

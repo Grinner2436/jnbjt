@@ -238,13 +238,7 @@ public class CraftBuildingHandler implements LinkHandler {
                 Elements tds = buildingContentTbody.select("td");
 
                 //经营此建筑的活动
-                if("民宅".equals(buildingName)){
-                    homeManagementAvtivity(tds,building,profession);
-                }else if("仓库".equals(buildingName)||"税课司".equals(buildingName)){
-
-                }else{
-                    generalManagementAvtivity(tds,building,profession);
-                }
+                generalManagementAvtivity(tds,building,profession);
                 //升级此建筑的活动
                 {
                     //升级建筑活动名称
@@ -350,12 +344,18 @@ public class CraftBuildingHandler implements LinkHandler {
         {
             //经营活动名称
             String activityName = tds.get(0).text().replaceAll("\\p{Zs}","");
-            String actityDescription= "商业经营：" + activityName;
+            String prefix = "商业经营";
+            if(profession == Profession.Craft){
+                prefix = "生产制作";
+            }else if (profession == Profession.Farm){
+                prefix = "农牧收获";
+            }
+            String actityDescription= prefix + "：" + activityName;
             Activity activity = activityRepository.findByDescription(actityDescription);
             if(activity == null){
                 activity = new Activity();
             }
-            activity.setDescription(activityName);
+            activity.setDescription(actityDescription);
 
             //经营活动总投资
             Map<Asset, AssetProperty> investments = new HashMap<>();
@@ -468,113 +468,6 @@ public class CraftBuildingHandler implements LinkHandler {
             profit.setAssetProperties(rewards);
             profitRepository.save(profit);
 
-            activity.setBuilding(building);
-            activity.setProfit(profit);
-            activity.setInvestment(investment);
-            activity.setProfession(profession);
-            activityRepository.save(activity);
-        }
-    }
-    private void homeManagementAvtivity(Elements tds, Building building, Profession profession){
-        {
-            //经营活动名称
-            String activityName = "税收：" + building.getName();
-
-            //经营活动总投资
-            Map<Asset, AssetProperty> investments = new HashMap<>();
-            //经营活动时间投资
-            int minuteAmount = 0;
-            {
-                String sourceTimeString = tds.get(2).select("div").get(0).childNode(1).outerHtml()
-                        .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
-                if(StringUtils.isBlank(sourceTimeString)){
-                    return;
-                }
-                {
-                    Pattern minutePattern = Pattern.compile("(\\d+)小时");
-                    Matcher matcher = minutePattern.matcher(sourceTimeString);
-                    if(matcher.find()){
-                        String minuteString = matcher.group(1);
-                        int minute = Integer.parseInt(minuteString) * 60;
-                        minuteAmount += minute;
-                    }
-                }
-                {
-                    Pattern minutePattern = Pattern.compile("(\\d+)分");
-                    Matcher matcher = minutePattern.matcher(sourceTimeString);
-                    if(matcher.find()){
-                        String minuteString = matcher.group(1);
-                        int minute = Integer.parseInt(minuteString);
-                        minuteAmount += minute;
-                    }
-                }
-                {
-                    Pattern secondPattern = Pattern.compile("(\\d+)秒");
-                    Matcher matcher = secondPattern.matcher(sourceTimeString);
-                    if(matcher.find()){
-                        String secondString = matcher.group(1);
-                        int minute = Integer.parseInt(secondString) / 60;
-                        minuteAmount += minute;
-                    }
-                }
-                Asset asset = assetRepository.findByName("时间");
-                if (asset == null) {
-                    asset = new Asset();
-                    asset.setName("时间");
-                    assetRepository.save(asset);
-                }
-                AssetProperty assetProperty = new AssetProperty();
-                //assetProperty.setAsset(asset);
-                assetProperty.setAmount(minuteAmount);
-                assetProperty.setAssetName(asset.getName());
-                investments.put(asset, assetProperty);
-            }
-            Investment investment = investmentRepository.findByName(activityName + "的投资");
-            if(investment == null){
-                investment = new Investment();
-            }
-            investment.setAssetProperties(investments);
-            investmentRepository.save(investment);
-
-            //经营活动回报
-            Map<Asset, AssetProperty> rewards = new HashMap<>();
-            {
-                AssetProperty assetProperty = new AssetProperty();
-                Asset asset = assetRepository.findByName("铜钱");
-                if (asset == null) {
-                    asset = new Asset();
-                    asset.setName("铜钱");
-                    assetRepository.save(asset);
-                }
-                //assetProperty.setAsset(asset);
-
-                String sourceProfitString = tds.get(0).text().replaceAll("\\p{Zs}","");
-                {
-                    Pattern minutePattern = Pattern.compile("(\\d+\\.\\d+)钱");
-                    Matcher matcher = minutePattern.matcher(sourceProfitString);
-                    if(matcher.find()){
-                        String minuteString = matcher.group(1);
-                        float moneyPerMinus = Float.parseFloat(minuteString);
-                        float totalMoney  = moneyPerMinus * minuteAmount;
-                        assetProperty.setAmount((int) totalMoney);
-                    }
-                }
-                assetProperty.setAssetName(asset.getName());
-                rewards.put(asset, assetProperty);
-            }
-
-            Profit profit = profitRepository.findByName(activityName + "的获利");
-            if(profit == null){
-                profit = new Profit();
-            }
-            profit.setAssetProperties(rewards);
-            profitRepository.save(profit);
-
-            Activity activity = activityRepository.findByDescription(activityName);
-            if(activity == null){
-                activity = new Activity();
-            }
-            activity.setDescription(activityName);
             activity.setBuilding(building);
             activity.setProfit(profit);
             activity.setInvestment(investment);

@@ -30,6 +30,6 @@ public class TalentStage {
 
     private Boolean updated;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "talentStage")
     private List<Enhancement> enhancements;
 }

@@ -22,14 +22,21 @@ public class GenericEnhancement extends Enhancement{
 
     public void operate(Activity activity, ResidentProperty residentProperty, TreasureProperty treasureProperty) {
         //验证条件
+        if(activity == null){
+            return;
+        }
         {
-            if (qualification.getBuilding() != Building.ANY_BUILDING && qualification.getBuilding().getId().intValue() != activity.getBuilding().getId().intValue()){
+
+            if (qualification.getActivity() != null && qualification.getActivity() != Activity.ANY_ACTIVITY && qualification.getActivity().getId().intValue() != activity.getId().intValue()){
                 return;
             };
-            if (qualification.getProfession() != Profession.Any && qualification.getProfession() != activity.getProfession()){
+            if (qualification.getBuilding() != null && qualification.getBuilding() != Building.ANY_BUILDING && qualification.getBuilding().getId().intValue() != activity.getBuilding().getId().intValue()){
                 return;
             };
-            if (qualification.getJob()  != Job.Any && qualification.getJob() != activity.getJob()){
+            if (qualification.getProfession() != null && qualification.getProfession() != Profession.Any && qualification.getProfession() != activity.getProfession()){
+                return;
+            };
+            if (qualification.getJob() != null && qualification.getJob()  != Job.AnyJob && qualification.getJob() != activity.getJob()){
                 return;
             };
         }
@@ -38,9 +45,9 @@ public class GenericEnhancement extends Enhancement{
             Map<Asset, AssetProperty> sourceAssetProperty = null;
             Map<Asset, AssetProperty> targetAssetProperty = new HashMap<>();
             //影响项目的来源
-            if (operation.getOperationTarget() == OperationTarget.Investment) {
+            if (operationTarget == OperationTarget.Investment) {
                 sourceAssetProperty = activity.getInvestment().getAssetProperties();
-            } else if (operation.getOperationTarget() == OperationTarget.Profit) {
+            } else if (operationTarget == OperationTarget.Profit) {
                 sourceAssetProperty = activity.getProfit().getAssetProperties();
             }
             //所有项目生效

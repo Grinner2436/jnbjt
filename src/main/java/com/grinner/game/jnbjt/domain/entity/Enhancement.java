@@ -1,5 +1,6 @@
 package com.grinner.game.jnbjt.domain.entity;
 
+import com.grinner.game.jnbjt.domain.enums.OperationTarget;
 import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
 import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
 import lombok.Data;
@@ -16,11 +17,16 @@ import javax.persistence.*;
 public abstract class Enhancement {
 
     @Id
+    @GeneratedValue
     private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "talent_stage_id")
     private TalentStage talentStage;
+
+    //作用项目
+    @Enumerated(EnumType.STRING)
+    protected OperationTarget operationTarget;
 
     //作用资源
     @OneToOne

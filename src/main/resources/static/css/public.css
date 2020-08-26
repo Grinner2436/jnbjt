@@ -84,6 +84,7 @@ form input.layui-input[disabled]{ background:#f2f2f2; color:#595963!important; }
 /*图标管理*/
 .iconsLength{ margin:0 5px;}
 .icons li{  margin:5px 0; text-align:center; height:120px; cursor:pointer;}
+ #talent-resident-list .icons li{  margin:10px 0; text-align:center; height:130px; cursor:pointer;}
 .icons li i{ display:block; font-size:35px; margin:10px 0; line-height:60px; height:60px;}
 .icons li:hover{ background:rgba(13,10,49,.9); border-radius:5px; color:#fff;}
 .icons li:hover i{ font-size:50px;}
@@ -163,6 +164,7 @@ h2.method{ font-size:18px; line-height:45px; padding-left:5px;}
 @media screen and (max-width:450px) {
     #userFaceBtn{ height: 30px;line-height: 30px; padding: 0 10px; font-size: 12px;}
     .user_right img#userFace{ width:100px; height:100px; margin-top:0;}
+    #redident-avatar{ width:100px; height:100px; margin-top:0;}
     .layui-col-xs12 .layui-form-label{ width:60px; padding-left:0;}
     .layui-col-xs12 .layui-input-block,.layui-col-xs12 .layui-input-inline{ margin-left:75px;}
     .layui-col-xs12 .layui-input-inline{ left:0 !important; width:auto !important;}
