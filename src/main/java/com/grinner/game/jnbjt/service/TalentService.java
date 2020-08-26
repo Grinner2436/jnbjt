@@ -54,9 +54,7 @@ public class TalentService {
             List<EnhancementVO> enhancements = talentStage.getEnhancements().stream().map(enhancement -> {
                 EnhancementVO enhancementVO = new EnhancementVO();
                 enhancementVO.setId(enhancement.getId());
-                enhancementVO.setOperationTarget(enhancement.getOperationTarget());
                 enhancementVO.setTalentStageId(talentStage.getId());
-                enhancementVO.setAssetId(enhancement.getAsset().getId());
 
                 EnhancementQualificationVO qualificationVO = new EnhancementQualificationVO();
                 qualificationVO.setActivityId(enhancement.getQualification().getActivity().getId());
@@ -65,10 +63,15 @@ public class TalentService {
                 qualificationVO.setJob(enhancement.getQualification().getJob());
                 enhancementVO.setQualification(qualificationVO);
 
-                EnhancementOperationVO operationVO = new EnhancementOperationVO();
-                operationVO.setOperand(enhancement.getOperation().getOperand());
-                operationVO.setOperation(enhancement.getOperation().getOperation());
-                enhancementVO.setOperation(operationVO);
+                List<EnhancementOperationVO> enhancementOperationList = enhancement.getOperations().stream().map(operationItem -> {
+                    EnhancementOperationVO operationVO = new EnhancementOperationVO();
+                    operationVO.setOperand(operationItem.getOperand());
+                    operationVO.setOperation(operationItem.getOperation());
+                    operationVO.setOperationTarget(operationItem.getOperationTarget());
+                    operationVO.setAssetId(operationItem.getAsset().getId());
+                    return operationVO;
+                }).collect(Collectors.toList());
+                enhancementVO.setOperations(enhancementOperationList);
                 return enhancementVO;
             }).collect(Collectors.toList());
             talentStageVO.setEnhancements(enhancements);
@@ -78,7 +81,7 @@ public class TalentService {
     }
 
     @Transactional
-    public OperationResult setResidentTalentList(Integer stageId, List<EnhancementAO> enhancementList){
+    public OperationResult setResidentTalentList(Integer stageId, List<EnhancementVO> enhancementList){
         OperationResult operationResult = new OperationResult();
         Optional<TalentStage> stageOptional = talentStageRepository.findById(stageId);
         if(!stageOptional.isPresent()){
@@ -95,11 +98,12 @@ public class TalentService {
             return operationResult;
         }
         AtomicInteger count = new AtomicInteger();
-        List<Enhancement> enhancements = enhancementList.stream().map(enhancementAO -> {
-            Integer activityId = enhancementAO.getActivityId();
-            Integer buildingId = enhancementAO.getBuildingId();
-            Profession profession = enhancementAO.getProfession();
-            Job job = enhancementAO.getJob();
+        List<Enhancement> enhancements = enhancementList.stream().map(enhancementVO -> {
+            EnhancementQualificationVO qualificationVO = enhancementVO.getQualification();
+            Integer activityId = qualificationVO.getActivityId();
+            Integer buildingId = qualificationVO.getBuildingId();
+            Profession profession = qualificationVO.getProfession();
+            Job job = qualificationVO.getJob();
             if(activityId == null && buildingId == null && profession == null && job == null){
                 return null;
             }
@@ -115,36 +119,42 @@ public class TalentService {
             qualification.setProfession(profession);
             qualification.setJob(job);
 
-            Integer assetId = enhancementAO.getAssetId();
-            OperationTarget operationTarget = enhancementAO.getOperationTarget();
-            Operation operation = enhancementAO.getOperation();
-            Integer operand = enhancementAO.getOperand();
-            if(assetId == null || !assetRepository.existsById(assetId) || operationTarget == null || operation == null || operand == null){
-                return null;
-            }
+            List<EnhancementOperationVO> operations = enhancementVO.getOperations();
+            List<EnhancementOperation> enhancementOperations = operations.stream().map(enhancementOperationVO -> {
+                Integer assetId = enhancementOperationVO.getAssetId();
+                OperationTarget operationTarget = enhancementOperationVO.getOperationTarget();
+                Operation operation = enhancementOperationVO.getOperation();
+                Integer operand = enhancementOperationVO.getOperand();
+                if(assetId == null || !assetRepository.existsById(assetId) || operationTarget == null || operation == null || operand == null){
+                    return null;
+                }
+                EnhancementOperation enhancementOperation = new EnhancementOperation();
+                enhancementOperation.setOperand(enhancementOperationVO.getOperand());
+                enhancementOperation.setOperation(enhancementOperationVO.getOperation());
+                Asset asset = assetRepository.getOne(assetId);
+                enhancementOperation.setAsset(asset);
+                enhancementOperation.setOperationTarget(operationTarget);
+                return enhancementOperation;
+            }).filter(operation -> operation != null).collect(Collectors.toList());
 
-            Integer enhancementId = enhancementAO.getEnhancementId();
+            Integer enhancementId = enhancementVO.getId();
             Enhancement enhancement = null;
             if(enhancementId != null && enhancementRepository.existsById(enhancementId)){
                 enhancement = enhancementRepository.getOne(enhancementId);
             }else {
                 enhancement = new GenericEnhancement();
             }
-
-            enhancement.setOperationTarget(operationTarget);
             enhancement.setQualification(qualification);
-            Asset asset = assetRepository.getOne(assetId);
-            enhancement.setAsset(asset);
-            EnhancementOperation enhancementOperation = new EnhancementOperation();
-            enhancementOperation.setOperand(enhancementAO.getOperand());
-            enhancementOperation.setOperation(enhancementAO.getOperation());
-            enhancement.setOperation(enhancementOperation);
+            enhancement.setOperations(enhancementOperations);
 
             enhancement.setTalentStage(stage);
             enhancementRepository.save(enhancement);
             count.incrementAndGet();
             return enhancement;
         }).filter(enhancement -> enhancement != null).collect(Collectors.toList());
+        if(enhancements.isEmpty()){
+
+        }
         stage.setEnhancements(enhancements);
         talentStageRepository.save(stage);
         operationResult.setResultType(ResultType.SUCCESS);

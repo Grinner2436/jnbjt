@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * 发挥优势
@@ -24,20 +25,11 @@ public abstract class Enhancement {
     @JoinColumn(name = "talent_stage_id")
     private TalentStage talentStage;
 
-    //作用项目
-    @Enumerated(EnumType.STRING)
-    protected OperationTarget operationTarget;
-
-    //作用资源
-    @OneToOne
-    @JoinColumn(name = "asset_id")
-    protected Asset asset;
-
     @Embedded
     protected EnhancementQualification qualification;
 
-    @Embedded
-    protected EnhancementOperation operation;
+    @ElementCollection
+    protected List<EnhancementOperation> operations;
 
     public abstract void operate(Activity activity, ResidentProperty residentProperty, TreasureProperty treasureProperty);
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.grinner.game.jnbjt.domain.enums.OperationTarget;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 发挥优势
  */
@@ -15,11 +17,7 @@ public class EnhancementVO {
 
     private Integer talentStageId;
 
-    protected OperationTarget operationTarget;
-
-    protected Integer assetId;
-
     protected EnhancementQualificationVO qualification;
 
-    protected EnhancementOperationVO operation;
+    protected List<EnhancementOperationVO> operations;
 }

@@ -3,6 +3,7 @@ package com.grinner.game.jnbjt.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.grinner.game.jnbjt.pojo.ao.EnhancementAO;
 import com.grinner.game.jnbjt.pojo.response.OperationResult;
+import com.grinner.game.jnbjt.pojo.vo.EnhancementVO;
 import com.grinner.game.jnbjt.pojo.vo.TalentStageVO;
 import com.grinner.game.jnbjt.service.TalentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class TalentController {
 
     @PostMapping("/stage/enhancement/list")
     public OperationResult setResidentTalentList(Integer stageId, String enhancements){
-        List<EnhancementAO> enhancements2= JSONArray.parseArray(enhancements,EnhancementAO.class);
-        OperationResult operationResult = talentService.setResidentTalentList(stageId, enhancements2);
+        List<EnhancementVO> enhancementList= JSONArray.parseArray(enhancements, EnhancementVO.class);
+        OperationResult operationResult = talentService.setResidentTalentList(stageId, enhancementList);
         return operationResult;
     }
 }

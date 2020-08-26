@@ -68,81 +68,75 @@
 					</div>
 				</div>
 			</fieldset>
-			<fieldset class="layui-elem-field" id="result-box">
+			<fieldset class="layui-elem-field result-box">
 				<legend>作用方式</legend>
-				<div class="layui-field-box">
-					<div class="layui-form-item">
-						<div class="layui-inline">
-							<label class="layui-form-label">作用目标</label>
-							<div class="layui-input-inline">
-								<select name="target" class="target-select" lay-search=""></select>
-							</div>
-						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">资源类型</label>
-							<div class="layui-input-inline">
-								<select name="asset" class= "asset-select" lay-search=""></select>
-							</div>
-						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">计算方式</label>
-							<div class="layui-input-inline"  style="width: 90px;">
-								<select name="operation" class= "operation-select"></select>
-							</div>
-							<div class="layui-input-inline"  style="width: 90px;">
-								<input type="text" name="operand"autocomplete="off" class="layui-input">
-							</div>
-						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">操作</label>
-							<div class="layui-input-inline">
-								<button class="layui-btn" lay-submit="" lay-filter="delEnhancementItem">删除作用</button>
-							</div>
-						</div>
+<!--				<div class="layui-field-box">-->
+<!--					<div class="layui-form-item">-->
 <!--						<div class="layui-inline">-->
-<!--							<label class="layui-form-label">操作数</label>-->
+<!--							<label class="layui-form-label">作用目标</label>-->
 <!--							<div class="layui-input-inline">-->
+<!--								<select name="target" class="target-select" lay-search=""></select>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="layui-inline">-->
+<!--							<label class="layui-form-label">资源类型</label>-->
+<!--							<div class="layui-input-inline">-->
+<!--								<select name="asset" class= "asset-select" lay-search=""></select>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="layui-inline">-->
+<!--							<label class="layui-form-label">计算方式</label>-->
+<!--							<div class="layui-input-inline"  style="width: 90px;">-->
+<!--								<select name="operation" class= "operation-select"></select>-->
+<!--							</div>-->
+<!--							<div class="layui-input-inline"  style="width: 90px;">-->
 <!--								<input type="text" name="operand"autocomplete="off" class="layui-input">-->
 <!--							</div>-->
 <!--						</div>-->
-					</div>
-				</div>
+<!--						<div class="layui-inline">-->
+<!--							<label class="layui-form-label">操作</label>-->
+<!--							<div class="layui-input-inline">-->
+<!--								<button class="layui-btn" lay-submit="" lay-filter="delEnhancementItem">删除作用</button>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
 			</fieldset>
 		</div>
 	</div>
 <!--作用方式模板-->
 	<div id="result-item-template">
-		<div class="layui-field-box">
-				<div class="layui-form-item">
-					<div class="layui-inline">
-						<label class="layui-form-label">作用目标</label>
-						<div class="layui-input-inline">
-							<select name="target" class="target-select" lay-search=""></select>
-						</div>
+		<div class="layui-field-box operationItem">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">作用目标</label>
+					<div class="layui-input-inline">
+						<select name="target" class="target-select" lay-search=""></select>
 					</div>
-					<div class="layui-inline">
-						<label class="layui-form-label">资源类型</label>
-						<div class="layui-input-inline">
-							<select name="asset" class= "asset-select" lay-search=""></select>
-						</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">资源类型</label>
+					<div class="layui-input-inline">
+						<select name="asset" class= "asset-select" lay-search=""></select>
 					</div>
-					<div class="layui-inline">
-						<label class="layui-form-label">计算方式</label>
-						<div class="layui-input-inline"  style="width: 90px;">
-							<select name="operation" class= "operation-select"></select>
-						</div>
-						<div class="layui-input-inline"  style="width: 90px;">
-							<input type="text" name="operand"autocomplete="off" class="layui-input">
-						</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">计算方式</label>
+					<div class="layui-input-inline"  style="width: 90px;">
+						<select name="operation" class= "operation-select"></select>
 					</div>
-					<div class="layui-inline">
-						<label class="layui-form-label">操作</label>
-						<div class="layui-input-inline">
-							<button class="layui-btn" lay-submit="" lay-filter="delEnhancementItem">删除作用</button>
-						</div>
+					<div class="layui-input-inline"  style="width: 90px;">
+						<input type="text" name="operand"autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">操作</label>
+					<div class="layui-input-inline">
+						<button class="layui-btn" lay-submit="" lay-filter="delEnhancementItem">删除作用</button>
 					</div>
 				</div>
 			</div>
+		</div>
 	</div>
 <!--空白Tab模板-->
 	<div id="enhancement-tab-frame" style="display: none">
@@ -152,7 +146,7 @@
 			</div>
 		</div>
 	</div>
-<!--空白按钮模板-->
+<!--Tab内容的框架模板-->
 	<div id="enhancement-tab-content" style="display: none">
 		<div class="layui-tab-item layui-show">
 			<blockquote class="layui-elem-quote stage-desc">天赋描述</blockquote>

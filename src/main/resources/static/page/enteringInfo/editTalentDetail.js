@@ -82,7 +82,7 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
                     'talent-id="'+ talent.id +'" '+
                     'talent-name="'+ talent.name +'"><div style="display: flex;justify-content: center;align-items: center;position: relative;">'+
                     backgroud +
-                    '<div style="position: absolute;z-index: 1;"><img src="'+ resident.avatar+'" class="userAvatar"></br></div></div>' + resident.name + '</li>';
+                    '<div class="bgselect" style="position: absolute;z-index: 1;"><img src="'+ resident.avatar+'" class="userAvatar"></br></div></div>' + resident.name + '</li>';
             }
             iconHtml += "</ul></div></fieldset>";
             $("#talent-resident-list").append(iconHtml);
@@ -101,12 +101,22 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
             var liList = '',tabList = '';
             for(var index = 0; index < data.length; index++){
                 var stage = data[index];
+                //加入新的Tab页签
                 liList = liList + '<li lay-id="'+ stage.level +'">' + stage.level + '</li>';
+                //Tab内容的框架
                 $("#enhancement-area .layui-tab-content").append($("#enhancement-tab-content").html());
+                //选中隐藏表单，填入stageid
                 $("#enhancement-area .layui-tab-content .menu-area:eq("+ index +")").find("[name=stageId]").val(stage.id);
                 var enhancements = data[index].enhancements;
                 for(var index2 = 0; index2 < enhancements.length; index2++){
+                    //加入条件的模板
                     $("#enhancement-area .layui-tab-content .menu-area:eq("+ index +")").before($("#enhancement-blank-template").html());
+                    var enhancement = enhancements[index2];
+                    var operations = enhancement.operations;
+                    for(var index3 = 0; index3 < operations.length; index3++){
+                        //加入结果模板
+                        $("#enhancement-area .result-box:eq("+ index +")").append($("#result-item-template").html());
+                    }
                 }
             }
             $("#enhancement-area ul").html(liList);
@@ -130,10 +140,15 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
                     $(eitem).find("[name=profession]").val(eitemData.qualification.profession.value);
                     $(eitem).find("[name=job]").val(eitemData.qualification.job.value);
 
-                    $(eitem).find("[name=target]").val(eitemData.operationTarget.value);
-                    $(eitem).find("[name=asset]").val(eitemData.assetId);
-                    $(eitem).find("[name=operation]").val(eitemData.operation.operation.value);
-                    $(eitem).find("[name=operand]").val(eitemData.operation.operand);
+                    var oList = $(eitem).find(".operationItem");
+                    var oDataList = eitemData.operations;
+                    for(var oIndex = 0; oIndex < oDataList.length; oIndex++){
+                        var oitem = oDataList[oIndex];
+                        $(oitem).find("[name=target]").val(oitem.operationTarget.value);
+                        $(oitem).find("[name=asset]").val(oitem.assetId);
+                        $(oitem).find("[name=operation]").val(oitem.operation.value);
+                        $(oitem).find("[name=operand]").val(oitem.operand);
+                    }
                 }
             }
             form.render();
@@ -147,13 +162,13 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
     //添加提升项
     form.on("submit(addEnhancement)",function(data){
         $(data.elem.parentElement.parentElement).before($("#enhancement-blank-template").html());
-        // $(data.elem.parentElement.parentElement.parentElement).find($("[name=stageId]").value());
+        $(data.elem.parentElement.parentElement.parentElement).find(".result-box").append($("#result-item-template").html());;
         form.render();
         return false;
     });
     //添加作用下项目
     form.on("submit(addResult)",function(data){
-        $(data.elem.parentElement).find("#result-box").append($("#result-item-template").html());
+        $(data.elem.parentElement).find(".result-box").append($("#result-item-template").html());
         form.render();
         return false;
     });
@@ -176,25 +191,33 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
         var datas = new Array();
         for(var eIndex = 0; eIndex < eList.length; eIndex++){
             var eitem = eList.get(eIndex);
-            var enhancementId = $(eitem).find("[name=enhancementId]").val();
-            var activityId = $(eitem).find("[name=activity]").val();
-            var buildingId = $(eitem).find("[name=building]").val();
-            var resultList = $(eitem).find("#result-box .layui-field-box");
+            var qualification = {
+                activityId: $(eitem).find("[name=activity]").val(),
+                buildingId: $(eitem).find("[name=building]").val(),
+                profession : $(eitem).find("[name=profession]").val(),
+                job : $(eitem).find("[name=job]").val()
+            }
+
+            var operations = new Array();
+            var resultList = $(eitem).find(".result-box .layui-field-box");
             for(var rIndex = 0; rIndex < resultList.length; rIndex++){
                 var ritem = resultList.get(rIndex);
-                var dataItem = {
-                    enhancementId : enhancementId,
-                    activityId : activityId,
-                    buildingId : buildingId,
+                var oItem = {
                     "assetId" : $(ritem).find("[name=asset]").val(),
                     "operand" : $(ritem).find("[name=operand]").val(),
-                    "profession" : $(ritem).find("[name=profession]").val(),
-                    "job" : $(ritem).find("[name=job]").val(),
                     "operationTarget" : $(ritem).find("[name=target]").val(),
                     "operation" : $(ritem).find("[name=operation]").val(),
                 }
-                datas.push(dataItem);
+                operations.push(oItem);
             }
+            enhancementId = $(eitem).find("[name=enhancementId]").val();
+            var eData = {
+                talentStageId : stageId,
+                id : enhancementId,
+                qualification : qualification,
+                operations : operations
+            }
+            datas.push(eData);
         }
         $.post("/talent/stage/enhancement/list",{
             enhancements : JSON.stringify(datas),

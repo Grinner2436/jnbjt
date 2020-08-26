@@ -86,6 +86,7 @@ form input.layui-input[disabled]{ background:#f2f2f2; color:#595963!important; }
 .icons li{  margin:5px 0; text-align:center; height:120px; cursor:pointer;}
  #talent-resident-list .icons li{  margin:10px 0; text-align:center; height:130px; cursor:pointer;}
 .icons li i{ display:block; font-size:35px; margin:10px 0; line-height:60px; height:60px;}
+ #talent-resident-list .bgselect:hover{ background:rgba(30,200,50,.9); border-radius:5px; color:#fff;}
 .icons li:hover{ background:rgba(13,10,49,.9); border-radius:5px; color:#fff;}
 .icons li:hover i{ font-size:50px;}
 #copyText{ width:0;height:0; opacity:0; position:absolute; left:-9999px; top:-9999px;}

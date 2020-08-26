@@ -42,39 +42,45 @@ public class GenericEnhancement extends Enhancement{
         }
         //实施增强
         {
-            Map<Asset, AssetProperty> sourceAssetProperty = null;
-            Map<Asset, AssetProperty> targetAssetProperty = new HashMap<>();
-            //影响项目的来源
-            if (operationTarget == OperationTarget.Investment) {
-                sourceAssetProperty = activity.getInvestment().getAssetProperties();
-            } else if (operationTarget == OperationTarget.Profit) {
-                sourceAssetProperty = activity.getProfit().getAssetProperties();
-            }
-            //所有项目生效
-            if (asset.getId().intValue() == Asset.ANYTHING.getId().intValue()) {
-                targetAssetProperty.putAll(sourceAssetProperty);
-            } else {
-                AssetProperty assetProperty = sourceAssetProperty.get(asset);
-                if (assetProperty == null) {
-                    assetProperty = new AssetProperty();
-//                    assetProperty.setAsset(asset);
-                    assetProperty.setAssetName(asset.getName());
-                    assetProperty.setAmount(Integer.valueOf(0));
-                }
-                targetAssetProperty.put(asset, assetProperty);
-            }
+            operations.forEach(operation -> {
+                OperationTarget operationTarget = operation.getOperationTarget();
+                Asset asset = operation.getAsset();
 
-            //应用增强
-            targetAssetProperty.forEach((asset, assetProperty) -> {
-                if (operation.getOperation() == Operation.Add) {
-                    assetProperty.setAmount(assetProperty.getAmount() + operation.getOperand());
-                } else if (operation.getOperation() == Operation.Minus) {
-                    assetProperty.setAmount(assetProperty.getAmount() - operation.getOperand());
-                } else if (operation.getOperation() == Operation.Multiply) {
-                    assetProperty.setAmount(assetProperty.getAmount() * operation.getOperand());
-                } else if (operation.getOperation() == Operation.Devide) {
-                    assetProperty.setAmount(assetProperty.getAmount() / operation.getOperand());
+                Map<Asset, AssetProperty> sourceAssetProperty = null;
+                Map<Asset, AssetProperty> targetAssetProperty = new HashMap<>();
+                //影响项目的来源
+                if (operationTarget == OperationTarget.Investment) {
+                    sourceAssetProperty = activity.getInvestment().getAssetProperties();
+                } else if (operationTarget == OperationTarget.Profit) {
+                    sourceAssetProperty = activity.getProfit().getAssetProperties();
                 }
+                //所有项目生效
+                if (asset.getId().intValue() == Asset.ANYTHING.getId().intValue()) {
+                    targetAssetProperty.putAll(sourceAssetProperty);
+                } else {
+                    AssetProperty assetProperty = sourceAssetProperty.get(asset);
+                    if (assetProperty == null) {
+                        assetProperty = new AssetProperty();
+    //                    assetProperty.setAsset(asset);
+                        assetProperty.setAssetName(asset.getName());
+                        assetProperty.setAmount(Integer.valueOf(0));
+                    }
+                    targetAssetProperty.put(asset, assetProperty);
+                }
+
+                //应用增强
+                targetAssetProperty.forEach((assetKey, assetProperty) -> {
+                    if (operation.getOperation() == Operation.Add) {
+                        assetProperty.setAmount(assetProperty.getAmount() + operation.getOperand());
+                    } else if (operation.getOperation() == Operation.Minus) {
+                        assetProperty.setAmount(assetProperty.getAmount() - operation.getOperand());
+                    } else if (operation.getOperation() == Operation.Multiply) {
+                        assetProperty.setAmount(assetProperty.getAmount() * operation.getOperand());
+                    } else if (operation.getOperation() == Operation.Devide) {
+                        assetProperty.setAmount(assetProperty.getAmount() / operation.getOperand());
+                    }
+                });
+                sourceAssetProperty.putAll(targetAssetProperty);
             });
         }
     }
