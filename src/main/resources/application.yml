@@ -9,3 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  data:
+    redis:
+      repositories:
+        enabled: true
+  redis:
+    client-name: jnbjt
+

@@ -143,11 +143,12 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
                     var oList = $(eitem).find(".operationItem");
                     var oDataList = eitemData.operations;
                     for(var oIndex = 0; oIndex < oDataList.length; oIndex++){
-                        var oitem = oDataList[oIndex];
-                        $(oitem).find("[name=target]").val(oitem.operationTarget.value);
-                        $(oitem).find("[name=asset]").val(oitem.assetId);
-                        $(oitem).find("[name=operation]").val(oitem.operation.value);
-                        $(oitem).find("[name=operand]").val(oitem.operand);
+                        var oitem = oList[oIndex];
+                        var oDataitem = oDataList[oIndex];
+                        $(oitem).find("[name=target]").val(oDataitem.operationTarget.value);
+                        $(oitem).find("[name=asset]").val(oDataitem.assetId);
+                        $(oitem).find("[name=operation]").val(oDataitem.operation.value);
+                        $(oitem).find("[name=operand]").val(oDataitem.operand);
                     }
                 }
             }
@@ -222,7 +223,10 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
         $.post("/talent/stage/enhancement/list",{
             enhancements : JSON.stringify(datas),
             stageId : stageId
-        },function(data){});
+        },function(data){
+            layer.tips(data.operationType + "  " + data.count +
+            " 项天赋"+ "  "  + data.resultType, "#redident-avatar", null)
+        });
         return false;
     });
     //上传头像

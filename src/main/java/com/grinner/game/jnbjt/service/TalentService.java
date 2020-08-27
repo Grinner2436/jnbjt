@@ -90,13 +90,6 @@ public class TalentService {
             return operationResult;
         }
         TalentStage stage = stageOptional.get();
-        Integer rows = enhancementRepository.deleteByTalentStage(stage);
-        if (enhancementList.isEmpty()){
-            operationResult.setResultType(ResultType.SUCCESS);
-            operationResult.setOperationType(OperationType.Delete);
-            operationResult.setCount(rows);
-            return operationResult;
-        }
         AtomicInteger count = new AtomicInteger();
         List<Enhancement> enhancements = enhancementList.stream().map(enhancementVO -> {
             EnhancementQualificationVO qualificationVO = enhancementVO.getQualification();
@@ -148,18 +141,21 @@ public class TalentService {
             enhancement.setOperations(enhancementOperations);
 
             enhancement.setTalentStage(stage);
-            enhancementRepository.save(enhancement);
+//            enhancementRepository.save(enhancement);
             count.incrementAndGet();
             return enhancement;
         }).filter(enhancement -> enhancement != null).collect(Collectors.toList());
-        if(enhancements.isEmpty()){
-
+        if(enhancementList.isEmpty()){
+            Integer rows = enhancementRepository.deleteByTalentStage(stage);
+            operationResult.setResultType(ResultType.SUCCESS);
+            operationResult.setOperationType(OperationType.Delete);
+            operationResult.setCount(rows);
+        }else if(!enhancements.isEmpty()){
+            enhancementRepository.saveAll(enhancements);
+            operationResult.setResultType(ResultType.SUCCESS);
+            operationResult.setOperationType(OperationType.Update);
+            operationResult.setCount(Integer.valueOf(enhancements.size()));
         }
-        stage.setEnhancements(enhancements);
-        talentStageRepository.save(stage);
-        operationResult.setResultType(ResultType.SUCCESS);
-        operationResult.setOperationType(OperationType.Update);
-        operationResult.setCount(Integer.valueOf(count.get()));
         return operationResult;
     }
 }
