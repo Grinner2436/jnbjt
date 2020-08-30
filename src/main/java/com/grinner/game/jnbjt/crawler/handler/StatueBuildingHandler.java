@@ -16,6 +16,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -27,10 +28,13 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class EntertainmentBuildingHandler implements LinkHandler {
+public class StatueBuildingHandler implements LinkHandler {
 
     @Autowired
     private StateCapitalRepository stateCapitalRepository;
+
+    @Autowired
+    private StatueRepository statueRepository;
 
     @Autowired
     private BuildingRepository buildingRepository;
@@ -50,17 +54,23 @@ public class EntertainmentBuildingHandler implements LinkHandler {
     @Override
     public void handle(String link, JSONObject context) {
         RestTemplate restTemplate = new RestTemplate();
-        String data = restTemplate.getForObject(link,String.class);
+        String data = null;
+        try {
+            data = restTemplate.getForObject(link,String.class);
+        } catch (RestClientException e) {
+            System.out.println(link);
+            return;
+        }
         Document document = Jsoup.parse(data);
 
-        String buildingName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
-        Building building = buildingRepository.findByName(buildingName);
-        if(building == null){
-            building = new Building();
+        String statueName = document.select("#firstHeading").text().replaceAll("\\p{Zs}","");
+        Statue statue = statueRepository.findByName(statueName);
+        if(statue == null){
+            statue = new Statue();
         }
-        building.setName(buildingName);
+        statue.setName(statueName);
 
-        building.setBuildingType(BuildingType.Entertainment);
+        statue.setBuildingType(BuildingType.Adventure);
 
         //数据区
         Elements tables = document.select(".main .row .col-lg-8");
@@ -82,19 +92,43 @@ public class EntertainmentBuildingHandler implements LinkHandler {
                     }
                     stateCapitals.add(stateCapital);
                 }
-                building.setStateCapitals(stateCapitals);
+                statue.setStateCapitals(stateCapitals);
 
-                //解锁等级
-                Integer unlockLevel = Integer.valueOf(buildingProperties.get(1).text().replaceAll("\\p{Zs}",""));
-                building.setUnlockLevel(unlockLevel);
-                String amountLimitationStr = buildingProperties.get(2).text().replaceAll("\\p{Zs}","");
-                building.setAmountLimitation(amountLimitationStr);
-                buildingRepository.save(building);
+                String effect = buildingProperties.get(4).text();
+                statue.setEffect(effect);
+                Pattern effectPattern = Pattern.compile("(\\d+)%");
+                Matcher matcher = effectPattern.matcher(effect);
+                if(matcher.find()){
+                    String minuteString = matcher.group(1);
+                    double sourceValue = Double.parseDouble(minuteString);
+                    double effectValue = sourceValue / 100;
+                    statue.setEffectValue(effectValue);
+                }
+
+                String range = buildingProperties.get(5).text();
+                statue.setEffectRange(range);
+
+                //关联建筑
+                Elements buildingElements = buildingProperties.get(6).select("a");
+                List<Building> buildings = new ArrayList<>();
+                for (Element buildingElement : buildingElements) {
+                    String buildingName = buildingElement.attr("title");
+                    //拿出建筑ID做关联
+                    Building building = buildingRepository.findByName(buildingName);
+                    if (building == null) {
+                        building = new Building();
+                        building.setName(buildingName);
+                        buildingRepository.save(building);
+                    }
+                    buildings.add(building);
+                }
+                statue.setBuildings(buildings);
+                statueRepository.save(statue);
             }
 
-            //建造此建筑的活动
+            //修复此雕像的活动
             {
-                String actityDescription= "建造建筑：1级" + buildingName;
+                String actityDescription= "修复雕像：" + statueName;
                 Activity activity = activityRepository.findByDescription(actityDescription);
                 if(activity == null){
                     activity = new Activity();
@@ -144,7 +178,6 @@ public class EntertainmentBuildingHandler implements LinkHandler {
                         assetRepository.save(asset);
                     }
                     AssetProperty assetProperty = new AssetProperty();
-                    //assetProperty.setAsset(asset);
                     assetProperty.setAmount(minuteAmount);
                     assetProperty.setAssetName(asset.getName());
                     investments.put(asset, assetProperty);
@@ -185,7 +218,7 @@ public class EntertainmentBuildingHandler implements LinkHandler {
                 investmentRepository.save(investment);
 
                 //建造建筑活动
-                activity.setBuilding(building);
+                activity.setBuilding(statue);
                 activity.setProfit(null);
                 activity.setInvestment(investment);
                 activity.setProfession(Profession.Build);

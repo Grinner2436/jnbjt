@@ -129,6 +129,9 @@ public class TalentService {
                 enhancementOperation.setOperationTarget(operationTarget);
                 return enhancementOperation;
             }).filter(operation -> operation != null).collect(Collectors.toList());
+            if(enhancementOperations.isEmpty()){
+                return null;
+            }
 
             Integer enhancementId = enhancementVO.getId();
             Enhancement enhancement = null;

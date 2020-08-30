@@ -47,11 +47,11 @@ public class EntranceHandler implements LinkHandler {
             });
         }
 
-        //居民
-        {
-            String uri = "https://wiki.biligame.com/jiangnan/角色图鉴";
-            residenceListHandler.handle(uri,null);
-        }
+//        //居民
+//        {
+//            String uri = "https://wiki.biligame.com/jiangnan/角色图鉴";
+//            residenceListHandler.handle(uri,null);
+//        }
 
 //        //珍宝
 //        {

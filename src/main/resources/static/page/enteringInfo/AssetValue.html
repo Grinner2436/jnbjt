@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>资源价值换算表</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="../../layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/public.css" media="all" />
+</head>
+<body class="childrenBody">
+<form class="layui-form layui-row" lay-filter="asset-value-form">
+	<div class="layui-form-item" id="btn-group">
+		<div class="layui-input-block">
+			<button type="submit" class="layui-btn" lay-submit="" lay-filter="saveAssetValue"  id="save-btn">保存</button>
+			<button type="reset" class="layui-btn layui-btn-primary">清空</button>
+		</div>
+	</div>
+</form>
+
+<div id="component-tray" style="display: none">
+	<div id="item-template">
+		<div class="layui-form-item">
+			<label class="layui-form-label">{assetName}</label>
+			<div class="layui-input-block">
+				<input type="text" name="{assetId}" value="{assetValue}" lay-verify="title" autocomplete="off" placeholder="铜钱" class="layui-input">
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../layui/layui.js"></script>
+<script type="text/javascript" src="AssetValue.js"></script>
+</body>
+</html>

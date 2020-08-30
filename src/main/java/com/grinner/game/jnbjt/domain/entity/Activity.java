@@ -4,12 +4,14 @@ import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.relation.BuildingProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 /**
  * 活动
  */
+@EqualsAndHashCode(of = "id")
 @Data
 @Entity
 public class Activity {

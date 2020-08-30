@@ -14,6 +14,7 @@ import javax.persistence.Id;
 @Data
 @Entity
 public class Asset {
+    public static final String WORKER = "工人";
 
     public static Asset TIME;
     public static Asset ANYTHING;
@@ -22,7 +23,7 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     //每份资产对应的“人时”
-    private Integer value;
+    private Double value;
 
     protected String name;
 }

@@ -1,8 +1,7 @@
 package com.grinner.game.jnbjt.domain.entity;
 
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
+import com.grinner.game.jnbjt.domain.enums.Operation;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -10,13 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 产出
+ * 官府活动
  */
 @Data
-@EqualsAndHashCode(of = "id")
-@ToString(exclude = {"activity"})
+@ToString(exclude = {"activities"})
 @Entity
-public class Profit {
+public class Revitalization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +22,13 @@ public class Profit {
 
     private String name;
 
-    @OneToOne(mappedBy = "profit")
-    private Activity activity;
-
     @ElementCollection
-    private Map<Asset, AssetProperty> assetProperties;
+    private Map<Activity, Integer> activities;
+
+    //操作数
+    private Integer operand;
+
+    //操作符
+    @Enumerated(EnumType.STRING)
+    private Operation operation;
 }

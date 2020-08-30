@@ -3,6 +3,7 @@ package com.grinner.game.jnbjt.domain.entity;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.relation.AssetProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Map;
  * 投入
  */
 @Data
+@EqualsAndHashCode(of = "id")
 @ToString(exclude = {"activity"})
 @Entity
 public class Investment {

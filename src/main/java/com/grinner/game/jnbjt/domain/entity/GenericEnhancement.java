@@ -63,7 +63,7 @@ public class GenericEnhancement extends Enhancement{
                         assetProperty = new AssetProperty();
     //                    assetProperty.setAsset(asset);
                         assetProperty.setAssetName(asset.getName());
-                        assetProperty.setAmount(Integer.valueOf(0));
+                        assetProperty.setAmount(Double.valueOf(0));
                     }
                     targetAssetProperty.put(asset, assetProperty);
                 }

@@ -142,7 +142,7 @@ public class CraftBuildingHandler implements LinkHandler {
                     String assetName = buildingProperties.get(2).select("img").attr("alt").replaceAll(".png", "");
                     String sourceTimeString = buildingProperties.get(2).text()
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
-                    int minuteAmount = 0;
+                    double minuteAmount = 0;
                     {
                         Pattern minutePattern = Pattern.compile("(\\d+)小时");
                         Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -200,7 +200,7 @@ public class CraftBuildingHandler implements LinkHandler {
                        break;
                     }
                     //通过数据库缓存拿到对应类型
-                    Integer amount = Integer.valueOf(investmentElementsOfCreate.get(index).outerHtml()
+                    Double amount = Double.valueOf(investmentElementsOfCreate.get(index).outerHtml()
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                     index++;
                     AssetProperty assetProperty = new AssetProperty();
@@ -260,7 +260,7 @@ public class CraftBuildingHandler implements LinkHandler {
                         if(StringUtils.isBlank(sourceTimeString)){
                             continue;
                         }
-                        int minuteAmount = 0;
+                        double minuteAmount = 0;
                         {
                             Pattern minutePattern = Pattern.compile("(\\d+)小时");
                             Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -318,7 +318,7 @@ public class CraftBuildingHandler implements LinkHandler {
                             break;
                         }
                         //通过数据库缓存拿到对应类型
-                        Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
+                        Double amount = Double.valueOf(investmentElements.get(index++).outerHtml()
                                 .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                         AssetProperty assetProperty = new AssetProperty();
                         //assetProperty.setAsset(asset);
@@ -365,7 +365,7 @@ public class CraftBuildingHandler implements LinkHandler {
                 if(StringUtils.isBlank(sourceTimeString)){
                     return;
                 }
-                int minuteAmount = 0;
+                double minuteAmount = 0;
                 {
                     Pattern minutePattern = Pattern.compile("(\\d+)小时");
                     Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -422,7 +422,7 @@ public class CraftBuildingHandler implements LinkHandler {
                     break;
                 }
                 //通过数据库缓存拿到对应类型
-                Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
+                Double amount = Double.valueOf(investmentElements.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
                 //assetProperty.setAsset(asset);
@@ -453,7 +453,7 @@ public class CraftBuildingHandler implements LinkHandler {
                     break;
                 }
                 //通过数据库缓存拿到对应类型
-                Integer amount = Integer.valueOf(finaceItemReward.get(index++).outerHtml()
+                Double amount = Double.valueOf(finaceItemReward.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
                 //assetProperty.setAsset(asset);

@@ -2,6 +2,7 @@ package com.grinner.game.jnbjt.domain.entity;
 
 import com.grinner.game.jnbjt.domain.enums.BuildingType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +11,9 @@ import java.util.List;
  * 建筑
  */
 @Data
+@EqualsAndHashCode(of = "id")
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Building {
 
     public static Building ANY_BUILDING;

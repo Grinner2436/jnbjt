@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Embeddable
 public class EnhancementOperation {
 
-    //操作数数
+    //操作数
     private Integer operand;
 
     //操作符

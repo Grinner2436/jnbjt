@@ -48,22 +48,22 @@ public class GenericActivityProcessor implements ActivityProcessor {
             AssetProperty timeAssetProperty = assetProperties.get(Asset.TIME);
             //属性减少百分比
             Integer value = finalAttrValue.get(profession);
-            int percent = value.intValue() / 15;
+            double percent = value.intValue() / 15;
 
             //影响属性值
-            int amount = timeAssetProperty.getAmount();
-            timeAssetProperty.setAmount(amount * (1 - percent / 100));
+            double amount = timeAssetProperty.getAmount();
+            timeAssetProperty.setAmount(amount * (1D - percent / 100D));
         }else if(profession == Profession.Farm || profession == Profession.Craft || profession == Profession.Finance){
             Profit profit = activity.getProfit();
             Map<Asset, AssetProperty> assetProperties = profit.getAssetProperties();
             assetProperties.forEach((asset, assetProperty) -> {
                 //属性减少百分比
                 Integer value = finalAttrValue.get(profession);
-                int percent = value.intValue() / 15;
+                double percent = value.intValue() / 15D;
 
                 //影响属性值
-                int amount = assetProperty.getAmount();
-                assetProperty.setAmount(amount * (1 + percent / 100));
+                double amount = assetProperty.getAmount();
+                assetProperty.setAmount(amount * (1D + percent / 100D));
             });
         }
 

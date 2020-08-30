@@ -16,5 +16,5 @@ public class AssetProperty {
     @JoinColumn(table = "asset",name = "asset_name",columnDefinition = "name")
     private String assetName;
 
-    private Integer amount;
+    private Double amount;
 }

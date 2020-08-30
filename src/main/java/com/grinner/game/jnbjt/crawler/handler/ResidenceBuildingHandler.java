@@ -112,7 +112,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                     String assetName = buildingProperties.get(3).select("img").attr("alt").replaceAll(".png", "");
                     String sourceTimeString = buildingProperties.get(3).text()
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
-                    int minuteAmount = 0;
+                    double minuteAmount = 0;
                     {
                         Pattern minutePattern = Pattern.compile("(\\d+)小时");
                         Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -170,7 +170,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                        break;
                     }
                     //通过数据库缓存拿到对应类型
-                    Integer amount = Integer.valueOf(investmentElementsOfCreate.get(index).outerHtml()
+                    Double amount = Double.valueOf(investmentElementsOfCreate.get(index).outerHtml()
                             .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                     index++;
                     AssetProperty assetProperty = new AssetProperty();
@@ -236,7 +236,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                         if(StringUtils.isBlank(sourceTimeString)){
                             continue;
                         }
-                        int minuteAmount = 0;
+                        double minuteAmount = 0;
                         {
                             Pattern minutePattern = Pattern.compile("(\\d+)小时");
                             Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -294,7 +294,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                             break;
                         }
                         //通过数据库缓存拿到对应类型
-                        Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
+                        Double amount = Double.valueOf(investmentElements.get(index++).outerHtml()
                                 .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                         AssetProperty assetProperty = new AssetProperty();
                         //assetProperty.setAsset(asset);
@@ -335,7 +335,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                 if(StringUtils.isBlank(sourceTimeString)){
                     return;
                 }
-                int minuteAmount = 0;
+                double minuteAmount = 0;
                 {
                     Pattern minutePattern = Pattern.compile("(\\d+)小时");
                     Matcher matcher = minutePattern.matcher(sourceTimeString);
@@ -392,7 +392,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                     break;
                 }
                 //通过数据库缓存拿到对应类型
-                Integer amount = Integer.valueOf(investmentElements.get(index++).outerHtml()
+                Double amount = Double.valueOf(investmentElements.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
                 //assetProperty.setAsset(asset);
@@ -423,7 +423,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
                     break;
                 }
                 //通过数据库缓存拿到对应类型
-                Integer amount = Integer.valueOf(finaceItemReward.get(index++).outerHtml()
+                Double amount = Double.valueOf(finaceItemReward.get(index++).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}",""));
                 AssetProperty assetProperty = new AssetProperty();
                 //assetProperty.setAsset(asset);
@@ -453,7 +453,7 @@ public class ResidenceBuildingHandler implements LinkHandler {
             //经营活动总投资
             Map<Asset, AssetProperty> investments = new HashMap<>();
             //经营活动时间投资
-            int minuteAmount = 0;
+            double minuteAmount = 0;
             {
                 String sourceTimeString = tds.get(2).select("div").get(0).childNode(1).outerHtml()
                         .replaceAll("&nbsp;", "").replaceAll("\\p{Zs}","");
@@ -524,9 +524,9 @@ public class ResidenceBuildingHandler implements LinkHandler {
                     Matcher matcher = minutePattern.matcher(sourceProfitString);
                     if(matcher.find()){
                         String minuteString = matcher.group(1);
-                        float moneyPerMinus = Float.parseFloat(minuteString);
-                        float totalMoney  = moneyPerMinus * minuteAmount;
-                        assetProperty.setAmount((int) totalMoney);
+                        double moneyPerMinus = Float.parseFloat(minuteString);
+                        double totalMoney  = moneyPerMinus * minuteAmount;
+                        assetProperty.setAmount(totalMoney);
                     }
                 }
                 assetProperty.setAssetName(asset.getName());

@@ -32,7 +32,7 @@ public class FirmBeanConfiguration {
                 time = new Asset();
                 time.setId(Integer.valueOf(0));
                 time.setName("时间");
-                time.setValue(Integer.valueOf(0));
+                time.setValue(Double.valueOf(0));
                 assetRepository.save(time);
             }
             Asset.TIME = time;
@@ -43,7 +43,7 @@ public class FirmBeanConfiguration {
                 anything = new Asset();
                 anything.setId(Integer.valueOf(-1));
                 anything.setName("任何资源");
-                anything.setValue(Integer.valueOf(-1));
+                anything.setValue(Double.valueOf(-1));
                 assetRepository.save(anything);
             }
             Asset.ANYTHING = anything;
