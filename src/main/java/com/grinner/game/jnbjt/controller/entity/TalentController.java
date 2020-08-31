@@ -1,4 +1,4 @@
-package com.grinner.game.jnbjt.controller;
+package com.grinner.game.jnbjt.controller.entity;
 
 import com.alibaba.fastjson.JSONArray;
 import com.grinner.game.jnbjt.pojo.ao.EnhancementAO;

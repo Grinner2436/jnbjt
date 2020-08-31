@@ -1,4 +1,4 @@
-package com.grinner.game.jnbjt.controller;
+package com.grinner.game.jnbjt.controller.entity;
 
 import com.grinner.game.jnbjt.pojo.ao.AssetAO;
 import com.grinner.game.jnbjt.pojo.response.OperationResult;

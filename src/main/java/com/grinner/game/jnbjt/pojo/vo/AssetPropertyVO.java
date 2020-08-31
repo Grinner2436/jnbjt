@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class AssetPropertyVO {
 
-    private Integer assetId;
+    private String assetName;
 
-    private Integer amount;
+    private Double amount;
 }

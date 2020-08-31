@@ -1,4 +1,4 @@
-package com.grinner.game.jnbjt.controller;
+package com.grinner.game.jnbjt.controller.composite;
 
 import com.alibaba.fastjson.JSONObject;
 import com.grinner.game.jnbjt.service.InfoService;

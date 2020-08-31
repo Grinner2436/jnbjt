@@ -32,4 +32,5 @@ public abstract class Enhancement {
     protected List<EnhancementOperation> operations;
 
     public abstract void operate(Activity activity, ResidentProperty residentProperty, TreasureProperty treasureProperty);
+    public abstract void operate(Activity activity, Resident resident);
 }

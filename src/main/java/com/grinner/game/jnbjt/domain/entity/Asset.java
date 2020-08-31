@@ -1,6 +1,7 @@
 package com.grinner.game.jnbjt.domain.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
  * 资产
  */
 @Data
+@EqualsAndHashCode(of = {"id"})
 @Entity
 public class Asset {
     public static final String WORKER = "工人";
