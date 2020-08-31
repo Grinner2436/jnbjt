@@ -1,13 +1,14 @@
 package com.grinner.game.jnbjt.domain.entity;
 
-import com.grinner.game.jnbjt.domain.enums.Profession;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.grinner.game.jnbjt.config.MapJsonToAsset;
 import com.grinner.game.jnbjt.domain.relation.AssetProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = {"activity"})
+@JsonIgnoreProperties({"activity"})
 @Entity
 public class Investment {
 
@@ -29,5 +31,6 @@ public class Investment {
     private Activity activity;
 
     @ElementCollection
-    private Map<Asset,AssetProperty> assetProperties;
+    @JsonDeserialize(keyUsing = MapJsonToAsset.class, keyAs = Asset.class, builder = Asset.class)
+    private Map<Asset, AssetProperty> assetProperties;
 }

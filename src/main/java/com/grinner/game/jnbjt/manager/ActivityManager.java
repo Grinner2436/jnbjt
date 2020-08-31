@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class ActivityManager {
      * 官府活动
      * @return
      */
-//    @Cacheable("revitalized-activities")
+    @Cacheable("revitalized-activities")
     public List<Activity> getRevitalizedActivities(){
         List<Activity> result = new ArrayList<>();
         List<Revitalization> revitalizations = revitalizationRepository.findAll();
@@ -40,15 +41,53 @@ public class ActivityManager {
             revitalizations.forEach(revitalization -> {
                 Map<Activity, Integer> activities = revitalization.getActivities();
                 activities.forEach(((activitySource, amountDelta) -> {
-                    Activity activity = new Activity();
-                    BeanUtils.copyProperties(activitySource,activity);
-                    Map<Asset, AssetProperty> assetProperties = activity.getProfit().getAssetProperties();
-                    assetProperties.forEach((asset, assetProperty) -> {
-                        Double amount = assetProperty.getAmount() + amountDelta;
-                        assetProperty.setAmount(amount);
-                    });
-                    activity.setDescription("（" + revitalization.getName() + "）" + activity.getDescription());
-                    result.add(activity);
+                    Activity activityCopy = new Activity();
+                    BeanUtils.copyProperties(activitySource,activityCopy);
+                    Building buildingSource = activitySource.getBuilding();
+                    Building buildingCopy = new Building();
+                    BeanUtils.copyProperties(buildingSource, buildingCopy);
+                    buildingCopy.setStateCapitals(null);
+                    activityCopy.setBuilding(buildingCopy);
+                    {
+                        Investment investmentSource = activitySource.getInvestment();
+                        Investment investmentCopy = new Investment();
+                        BeanUtils.copyProperties(investmentSource, investmentCopy);
+                        investmentCopy.setActivity(null);
+                        Map<Asset, AssetProperty> assetPropertiesSource = investmentSource.getAssetProperties();
+                        Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                        assetPropertiesSource.forEach((asset, assetProperty) -> {
+                            Asset assetCopy = new Asset();
+                            BeanUtils.copyProperties(asset, assetCopy);
+                            AssetProperty assetPropertyCopy = new AssetProperty();
+
+                            BeanUtils.copyProperties(asset, assetCopy);
+                            assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                        });
+                        investmentCopy.setAssetProperties(assetPropertiesCopy);
+                        activityCopy.setInvestment(investmentCopy);
+                    }
+                    {
+                        Profit profitSource = activitySource.getProfit();
+                        Profit profitCopy = new Profit();
+                        BeanUtils.copyProperties(profitSource, profitCopy);
+                        profitCopy.setActivity(null);
+                        Map<Asset, AssetProperty> assetPropertiesSource = profitSource.getAssetProperties();
+                        Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                        assetPropertiesSource.forEach((asset, assetProperty) -> {
+                            Asset assetCopy = new Asset();
+                            BeanUtils.copyProperties(asset, assetCopy);
+                            AssetProperty assetPropertyCopy = new AssetProperty();
+
+                            Double amount = assetProperty.getAmount() + amountDelta;
+                            assetPropertyCopy.setAmount(amount);
+                            assetPropertyCopy.setAssetName(asset.getName());
+                            assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                        });
+                        profitCopy.setAssetProperties(assetPropertiesCopy);
+                        activityCopy.setProfit(profitCopy);
+                    }
+                    activityCopy.setDescription("（" + revitalization.getName() + "）" + activityCopy.getDescription());
+                    result.add(activityCopy);
                 }));
             });
         }
@@ -59,7 +98,7 @@ public class ActivityManager {
      * 雕像加成
      * @return
      */
-//    @Cacheable("flourished-activities")
+    @Cacheable("flourished-activities")
     public List<Activity> getFlourishedActivities(){
         List<Activity> result = new ArrayList<>();
         List<Statue> statues = statueRepository.findAll();
@@ -69,18 +108,56 @@ public class ActivityManager {
                 buildings.forEach(building -> {
                     List<Activity> activities = activityRepository.findAllByBuilding(building);
                     activities.forEach(activitySource -> {
-                        Activity activity = new Activity();
-                        BeanUtils.copyProperties(activitySource,activity);
-                        if(activity.getProfession() == Profession.Build || activity.getProfession() == Profession.Adventure){
+                        if(activitySource.getProfession() == Profession.Build || activitySource.getProfession() == Profession.Adventure){
                             return;
                         }
-                        Map<Asset, AssetProperty> assetProperties = activity.getProfit().getAssetProperties();
-                        assetProperties.forEach((asset, assetProperty) -> {
-                            Double amount = assetProperty.getAmount() * (1D + statue.getEffectValue());
-                            assetProperty.setAmount(amount);
-                        });
-                        activity.setDescription("（" + statue.getName() + "）" + activity.getDescription());
-                        result.add(activity);
+                        Activity activityCopy = new Activity();
+                        BeanUtils.copyProperties(activitySource,activityCopy);
+                        Building buildingSource = activitySource.getBuilding();
+                        Building buildingCopy = new Building();
+                        BeanUtils.copyProperties(buildingSource, buildingCopy);
+                        buildingCopy.setStateCapitals(null);
+                        activityCopy.setBuilding(buildingCopy);
+                        {
+                            Investment investmentSource = activitySource.getInvestment();
+                            Investment investmentCopy = new Investment();
+                            BeanUtils.copyProperties(investmentSource, investmentCopy);
+                            investmentCopy.setActivity(null);
+                            Map<Asset, AssetProperty> assetPropertiesSource = investmentSource.getAssetProperties();
+                            Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                            assetPropertiesSource.forEach((asset, assetProperty) -> {
+                                Asset assetCopy = new Asset();
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                AssetProperty assetPropertyCopy = new AssetProperty();
+
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                            });
+                            investmentCopy.setAssetProperties(assetPropertiesCopy);
+                            activityCopy.setInvestment(investmentCopy);
+                        }
+                        {
+                            Profit profitSource = activitySource.getProfit();
+                            Profit profitCopy = new Profit();
+                            BeanUtils.copyProperties(profitSource, profitCopy);
+                            profitCopy.setActivity(null);
+                            Map<Asset, AssetProperty> assetPropertiesSource = profitSource.getAssetProperties();
+                            Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                            assetPropertiesSource.forEach((asset, assetProperty) -> {
+                                Asset assetCopy = new Asset();
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                AssetProperty assetPropertyCopy = new AssetProperty();
+
+                                Double amount = assetProperty.getAmount() * (1D + statue.getEffectValue());
+                                assetPropertyCopy.setAmount(amount);
+                                assetPropertyCopy.setAssetName(asset.getName());
+                                assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                            });
+                            profitCopy.setAssetProperties(assetPropertiesCopy);
+                            activityCopy.setProfit(profitCopy);
+                        }
+                        activityCopy.setDescription("（" + statue.getName() + "）" + activityCopy.getDescription());
+                        result.add(activityCopy);
                     });
                 });
             });
@@ -92,7 +169,7 @@ public class ActivityManager {
      * 官府+雕像加成
      * @return
      */
-//    @Cacheable("revitalized-flourished-activities")
+    @Cacheable("revitalized-flourished-activities")
     public List<Activity> getRevitalizedAndFlourishedActivities(){
         List<Activity> result = new ArrayList<>();
         List<Statue> statues = statueRepository.findAll();
@@ -102,18 +179,59 @@ public class ActivityManager {
                 buildings.forEach(building -> {
                     List<Activity> activities = getRevitalizedActivities(building);
                     activities.forEach(activitySource -> {
-                        Activity activity = new Activity();
-                        BeanUtils.copyProperties(activitySource,activity);
-                        if(activity.getProfession() == Profession.Build || activity.getProfession() == Profession.Adventure){
+                        if(activitySource.getProfession() == Profession.Build || activitySource.getProfession() == Profession.Adventure){
                             return;
                         }
-                        Map<Asset, AssetProperty> assetProperties = activity.getProfit().getAssetProperties();
-                        assetProperties.forEach((asset, assetProperty) -> {
-                            Double amount = assetProperty.getAmount() * (1D + statue.getEffectValue());
-                            assetProperty.setAmount(amount);
-                        });
-                        activity.setDescription("（" + statue.getName() + "）" + activity.getDescription());
-                        result.add(activity);
+
+                        Activity activityCopy = new Activity();
+                        BeanUtils.copyProperties(activitySource,activityCopy);
+
+                        Building buildingSource = activitySource.getBuilding();
+                        Building buildingCopy = new Building();
+                        BeanUtils.copyProperties(buildingSource, buildingCopy);
+                        buildingCopy.setStateCapitals(null);
+                        activityCopy.setBuilding(buildingCopy);
+                        {
+                            Investment investmentSource = activitySource.getInvestment();
+                            Investment investmentCopy = new Investment();
+                            BeanUtils.copyProperties(investmentSource, investmentCopy);
+                            investmentCopy.setActivity(null);
+                            Map<Asset, AssetProperty> assetPropertiesSource = investmentSource.getAssetProperties();
+                            Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                            assetPropertiesSource.forEach((asset, assetProperty) -> {
+                                Asset assetCopy = new Asset();
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                AssetProperty assetPropertyCopy = new AssetProperty();
+
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                            });
+                            investmentCopy.setAssetProperties(assetPropertiesCopy);
+                            activityCopy.setInvestment(investmentCopy);
+                        }
+                        {
+                            Profit profitSource = activitySource.getProfit();
+                            Profit profitCopy = new Profit();
+                            BeanUtils.copyProperties(profitSource, profitCopy);
+                            profitCopy.setActivity(null);
+                            Map<Asset, AssetProperty> assetPropertiesSource = profitSource.getAssetProperties();
+                            Map<Asset, AssetProperty> assetPropertiesCopy = new HashMap<>();
+                            assetPropertiesSource.forEach((asset, assetProperty) -> {
+                                Asset assetCopy = new Asset();
+                                BeanUtils.copyProperties(asset, assetCopy);
+                                AssetProperty assetPropertyCopy = new AssetProperty();
+
+                                Double amount = assetProperty.getAmount() * (1D + statue.getEffectValue());
+                                assetPropertyCopy.setAmount(amount);
+                                assetPropertyCopy.setAssetName(asset.getName());
+                                assetPropertiesCopy.put(assetCopy, assetPropertyCopy);
+                            });
+                            profitCopy.setAssetProperties(assetPropertiesCopy);
+                            activityCopy.setProfit(profitCopy);
+                        }
+
+                        activityCopy.setDescription("（" + statue.getName() + "）" + activityCopy.getDescription());
+                        result.add(activityCopy);
                     });
                 });
             });

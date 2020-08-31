@@ -1,9 +1,9 @@
 package com.grinner.game.jnbjt.domain.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,4 +28,13 @@ public class Asset {
     private Double value;
 
     protected String name;
+
+    @Override
+    public String toString() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",id);
+        jsonObject.put("value",value);
+        jsonObject.put("name",name);
+        return jsonObject.toJSONString();
+    }
 }

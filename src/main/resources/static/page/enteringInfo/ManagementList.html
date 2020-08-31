@@ -13,9 +13,34 @@
 	<link rel="stylesheet" href="../../css/public.css" media="all" />
 </head>
 <body class="childrenBody">
-<form class="layui-form">
-	<table id="managementList" lay-filter="managementList"></table>
-</form>
+<blockquote class="layui-elem-quote quoteBox">
+	<form class="layui-form">
+		<div class="layui-inline">
+			<label class="layui-form-label">活动</label>
+			<div class="layui-input-inline">
+				<select name="activitySelect" class= "asset-select" lay-search=""></select>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">居民</label>
+			<div class="layui-input-inline">
+				<select name="residentSelect" class= "asset-select" lay-search=""></select>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">资源</label>
+			<div class="layui-input-inline">
+				<select name="assetSelect" class= "asset-select" lay-search=""></select>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div class="layui-input-inline">
+				<select name="asset" class= "asset-select" lay-search=""></select>
+			</div>
+		</div>
+	</form>
+</blockquote>
+<table id="managementList" lay-filter="managementList"></table>
 <script type="text/javascript" src="../../layui/layui.js"></script>
 <script type="text/javascript" src="ManagementList.js"></script>
 </body>

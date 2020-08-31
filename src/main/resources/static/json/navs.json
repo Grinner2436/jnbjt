@@ -1,57 +1,28 @@
 {
 	"enteringInfo": [
 		{
-			"title": "天赋算法",
-			"icon": "&#xe630;",
-			"href": "",
-			"spread": false,
-			"children": [
-				{
-					"title": "居民天赋",
-					"icon": "&#xe61c;",
-					"href": "page/enteringInfo/residentTalent.html",
-					"spread": false
-				},
-				{
-					"title": "珍宝天赋",
-					"icon": "&#xe609;",
-					"href": "page/enteringInfo/login.html",
-					"spread": false
-				}
-			]
-		},
-		{
-			"title": "文章列表",
-			"icon": "icon-text",
-			"href": "page/news/newsList.html",
+			"title": "居民天赋",
+			"icon": "&#xe61c;",
+			"href": "page/enteringInfo/ResidentTalentDetail.html",
 			"spread": false
 		},
 		{
-			"title": "图片管理",
-			"icon": "&#xe634;",
-			"href": "page/img/images.html",
+			"title": "官府活动",
+			"icon": "&#xe61c;",
+			"href": "page/enteringInfo/RevitalizationDetail.html",
 			"spread": false
 		},
 		{
-			"title": "图片管理",
-			"icon": "&#xe630;",
-			"href": "",
-			"spread": false,
-			"children": [
-				{
-					"title": "404页面",
-					"icon": "&#xe61c;",
-					"href": "page/404.html",
-					"spread": false
-				},
-				{
-					"title": "登录",
-					"icon": "&#xe609;",
-					"href": "page/login/login.html",
-					"spread": false,
-					"target": "_blank"
-				}
-			]
+			"title": "资源价值",
+			"icon": "&#xe61c;",
+			"href": "page/enteringInfo/AssetValue.html",
+			"spread": false
+		},
+		{
+			"title": "活动经营",
+			"icon": "&#xe61c;",
+			"href": "page/enteringInfo/ManagementList.html",
+			"spread": false
 		}
 	],
 	"contentManagement": [

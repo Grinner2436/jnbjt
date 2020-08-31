@@ -8,15 +8,13 @@ import com.grinner.game.jnbjt.domain.relation.AssetProperty;
 import com.grinner.game.jnbjt.domain.relation.AttributeProperty;
 import com.grinner.game.jnbjt.manager.ActivityManager;
 import com.grinner.game.jnbjt.pojo.vo.AssetPropertyVO;
+import com.grinner.game.jnbjt.pojo.vo.AssetVO;
 import com.grinner.game.jnbjt.pojo.vo.ProfitVO;
 import com.grinner.game.jnbjt.pojo.vo.composite.ActivityValueVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ManagementService {
@@ -105,7 +103,7 @@ public class ManagementService {
                     assetPropertyVO.setAssetName(assetProperty.getAssetName());
                     assetPropertyVO.setAmount(assetProperty.getAmount());
                     profitAssets.add(assetPropertyVO);
-                    total += asset.getValue();
+                    total += asset.getValue() * assetProperty.getAmount();
                 }
                 activityValueVO.setValue(Double.valueOf(total));
                 result.add(activityValueVO);
