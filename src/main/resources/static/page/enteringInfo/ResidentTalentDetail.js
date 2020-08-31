@@ -13,6 +13,7 @@ layui.use(['form','layer','upload','laydate',"address","element"],function(){
         laydate = layui.laydate,
         address = layui.address;
 
+    var formSelects = layui.formSelects;
     //初始化下拉框内容
     $.getJSON("/info/meta/list",function(data){
         var activities = data.activities;

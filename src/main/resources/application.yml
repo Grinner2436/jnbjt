@@ -15,7 +15,7 @@ spring:
         enabled: true
   redis:
     client-name: jnbjt
-    host: localhost
+    host: 192.168.42.205
     password: password
   mvc:
     hiddenmethod:

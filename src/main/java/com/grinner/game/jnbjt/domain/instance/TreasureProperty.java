@@ -1,4 +1,4 @@
-package com.grinner.game.jnbjt.domain.relation;
+package com.grinner.game.jnbjt.domain.instance;
 
 import com.grinner.game.jnbjt.domain.entity.TalentStage;
 import com.grinner.game.jnbjt.domain.enums.Profession;

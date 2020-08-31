@@ -1,8 +1,8 @@
 package com.grinner.game.jnbjt.core;
 
 import com.grinner.game.jnbjt.domain.entity.Activity;
-import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
-import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
+import com.grinner.game.jnbjt.domain.instance.ResidentProperty;
+import com.grinner.game.jnbjt.domain.instance.TreasureProperty;
 
 public interface ActivityProcessor {
 

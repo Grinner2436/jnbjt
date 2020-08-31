@@ -9,39 +9,54 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="format-detection" content="telephone=no">
+	<!-- 引入样式 -->
 	<link rel="stylesheet" href="../../layui/css/layui.css" media="all" />
 	<link rel="stylesheet" href="../../css/public.css" media="all" />
 </head>
 <body class="childrenBody">
 <blockquote class="layui-elem-quote quoteBox">
-	<form class="layui-form">
-		<div class="layui-inline">
-			<label class="layui-form-label">活动</label>
-			<div class="layui-input-inline">
-				<select name="activitySelect" class= "asset-select" lay-search=""></select>
+	<form class="layui-form" >
+		<div class="layui-row">
+			<div class="layui-inline layui-col-md1">
+				<label class="layui-form-label">活动</label>
 			</div>
+			<div id="activity-select" class="xm-select-demo layui-col-md11"></div>
 		</div>
-		<div class="layui-inline">
-			<label class="layui-form-label">居民</label>
-			<div class="layui-input-inline">
-				<select name="residentSelect" class= "asset-select" lay-search=""></select>
+		<div class="layui-row">
+			<div class="layui-inline layui-col-md1">
+				<label class="layui-form-label">居民</label>
 			</div>
+			<div id="resident-select" class="xm-select-demo layui-col-md11"></div>
 		</div>
-		<div class="layui-inline">
-			<label class="layui-form-label">资源</label>
-			<div class="layui-input-inline">
-				<select name="assetSelect" class= "asset-select" lay-search=""></select>
+		<div class="layui-row">
+			<div class="layui-inline layui-col-md1">
+				<label class="layui-form-label">资源</label>
 			</div>
+			<div id="asset-select" class="xm-select-demo layui-col-md11"></div>
 		</div>
-		<div class="layui-inline">
-			<div class="layui-input-inline">
-				<select name="asset" class= "asset-select" lay-search=""></select>
+		<div class="layui-row">
+			<div class="layui-inline layui-col-md1">
+				<label class="layui-form-label">加成</label>
 			</div>
+            <div class="layui-col-md11">
+                <input type="checkbox" name="buff" value="1" title="雕像加成">
+                <input type="checkbox" name="buff" value="2" title="活动加成">
+            </div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-inline layui-col-md1">
+<!--				<label class="layui-form-label">加成</label>-->
+			</div>
+            <div class="layui-col-md11">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="searchManagement">搜索</button>
+                <button type="reset" class="layui-btn" lay-submit="">清空</button>
+            </div>
 		</div>
 	</form>
 </blockquote>
 <table id="managementList" lay-filter="managementList"></table>
 <script type="text/javascript" src="../../layui/layui.js"></script>
 <script type="text/javascript" src="ManagementList.js"></script>
+<script type="text/javascript" src="../../plugins/xm-select.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.BuildingType;
 import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

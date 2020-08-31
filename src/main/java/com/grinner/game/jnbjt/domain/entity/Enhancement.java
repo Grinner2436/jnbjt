@@ -1,8 +1,7 @@
 package com.grinner.game.jnbjt.domain.entity;
 
-import com.grinner.game.jnbjt.domain.enums.OperationTarget;
-import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
-import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
+import com.grinner.game.jnbjt.domain.instance.ResidentProperty;
+import com.grinner.game.jnbjt.domain.instance.TreasureProperty;
 import lombok.Data;
 import lombok.ToString;
 

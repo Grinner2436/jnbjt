@@ -2,7 +2,7 @@ package com.grinner.game.jnbjt.domain.entity;
 
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.enums.ResidentGrade;
-import com.grinner.game.jnbjt.domain.relation.AttributeProperty;
+import com.grinner.game.jnbjt.domain.instance.AttributeProperty;
 import lombok.Data;
 import lombok.ToString;
 

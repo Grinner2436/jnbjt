@@ -5,7 +5,7 @@ import com.grinner.game.jnbjt.dao.jpa.RevitalizationRepository;
 import com.grinner.game.jnbjt.dao.jpa.StatueRepository;
 import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;

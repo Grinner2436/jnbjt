@@ -2,9 +2,9 @@ package com.grinner.game.jnbjt.core;
 
 import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
-import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
-import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.ResidentProperty;
+import com.grinner.game.jnbjt.domain.instance.TreasureProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

@@ -2,7 +2,6 @@ package com.grinner.game.jnbjt.domain.entity;
 
 import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.BuildingProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

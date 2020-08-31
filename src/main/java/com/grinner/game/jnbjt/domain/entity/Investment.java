@@ -3,7 +3,7 @@ package com.grinner.game.jnbjt.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.grinner.game.jnbjt.config.MapJsonToAsset;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

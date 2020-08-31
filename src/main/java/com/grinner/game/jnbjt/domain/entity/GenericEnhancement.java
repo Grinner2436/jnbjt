@@ -4,9 +4,9 @@ import com.grinner.game.jnbjt.domain.enums.Job;
 import com.grinner.game.jnbjt.domain.enums.Operation;
 import com.grinner.game.jnbjt.domain.enums.OperationTarget;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
-import com.grinner.game.jnbjt.domain.relation.ResidentProperty;
-import com.grinner.game.jnbjt.domain.relation.TreasureProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.ResidentProperty;
+import com.grinner.game.jnbjt.domain.instance.TreasureProperty;
 import lombok.Data;
 
 import javax.persistence.Entity;

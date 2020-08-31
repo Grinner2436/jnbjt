@@ -9,7 +9,7 @@ import com.grinner.game.jnbjt.domain.entity.Activity;
 import com.grinner.game.jnbjt.domain.entity.Asset;
 import com.grinner.game.jnbjt.domain.entity.Investment;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

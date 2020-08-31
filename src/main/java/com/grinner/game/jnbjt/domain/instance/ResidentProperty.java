@@ -1,4 +1,4 @@
-package com.grinner.game.jnbjt.domain.relation;
+package com.grinner.game.jnbjt.domain.instance;
 
 import com.grinner.game.jnbjt.domain.entity.Resident;
 import com.grinner.game.jnbjt.domain.entity.ResidentLevel;

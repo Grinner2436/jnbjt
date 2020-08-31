@@ -1,8 +1,6 @@
-package com.grinner.game.jnbjt.domain.relation;
+package com.grinner.game.jnbjt.domain.instance;
 
-import com.grinner.game.jnbjt.domain.entity.Asset;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 

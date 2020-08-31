@@ -4,17 +4,19 @@ import com.grinner.game.jnbjt.dao.jpa.ActivityRepository;
 import com.grinner.game.jnbjt.dao.jpa.ResidentRepository;
 import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.Profession;
-import com.grinner.game.jnbjt.domain.relation.AssetProperty;
-import com.grinner.game.jnbjt.domain.relation.AttributeProperty;
+import com.grinner.game.jnbjt.domain.instance.AssetProperty;
+import com.grinner.game.jnbjt.domain.instance.AttributeProperty;
 import com.grinner.game.jnbjt.manager.ActivityManager;
+import com.grinner.game.jnbjt.pojo.ao.ManagementQuery;
 import com.grinner.game.jnbjt.pojo.vo.AssetPropertyVO;
-import com.grinner.game.jnbjt.pojo.vo.AssetVO;
 import com.grinner.game.jnbjt.pojo.vo.ProfitVO;
 import com.grinner.game.jnbjt.pojo.vo.composite.ActivityValueVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class ManagementService {
@@ -28,18 +30,54 @@ public class ManagementService {
     @Autowired
     private ActivityManager activityManager;
 
-    public List<ActivityValueVO> getDetailList(){
+
+    public List<ActivityValueVO> getDetailList(ManagementQuery managementQuery){
         List<ActivityValueVO> result = new ArrayList<>();
 
         List<Activity> allActivities = new ArrayList<>();
-        List<Activity> revitalizedActivities = activityManager.getRevitalizedActivities();
-//        List<Activity> flourishedActivities = activityManager.getFlourishedActivities();
-//        List<Activity> revitalizedAndFlourishedActivities = activityManager.getRevitalizedAndFlourishedActivities();
-        allActivities.addAll(revitalizedActivities);
-//        allActivities.addAll(flourishedActivities);
-//        allActivities.addAll(revitalizedAndFlourishedActivities);
+        Predicate<Activity> activityPredicate = activity -> {
+            List<String> activityNames = managementQuery.getActivityNames();
+            if(activityNames == null || activityNames.isEmpty()){
+                return true;
+            }
+            boolean activityNameMatch =  activityNames.stream().anyMatch(name -> activity.getDescription().contains(name));
+            if(!activityNameMatch){
+                return false;
+            }
+            List<String> assetNames = managementQuery.getAssetNames();
+            if(assetNames == null || assetNames.isEmpty()){
+                return true;
+            }
+            List<String> assetNameList = activity.getProfit().getAssetProperties().keySet().stream().map(Asset::getName).collect(Collectors.toList());
+            assetNameList.retainAll(assetNames);
+            return assetNameList.size() > 0;
+        };
+        {
+            List<Activity> revitalizedActivities = activityManager.getRevitalizedActivities();
+            revitalizedActivities = revitalizedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            allActivities.addAll(revitalizedActivities);
+        }
+        {
+            List<Activity> flourishedActivities = activityManager.getFlourishedActivities();
+            flourishedActivities = flourishedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            allActivities.addAll(flourishedActivities);
+        }
+        {
+            List<Activity> revitalizedAndFlourishedActivities = activityManager.getRevitalizedAndFlourishedActivities();
+            revitalizedAndFlourishedActivities = revitalizedAndFlourishedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            allActivities.addAll(revitalizedAndFlourishedActivities);
+        }
 
-        List<Resident> residents = residentRepository.findAll();
+        Predicate<Resident> residentNameMatch = resident -> {
+            List<String> residentNames = managementQuery.getResidentNames();
+            if(residentNames == null || residentNames.isEmpty()){
+                return true;
+            }
+            boolean match = residentNames.stream().anyMatch(name -> resident.getName().contains(name));
+            return match;
+        };
+        List<Resident> residentsSource = residentRepository.findAll();
+        List<Resident> residents = residentsSource.stream().filter(residentNameMatch).collect(Collectors.toList());
         allActivities.forEach(activity -> {
             residents.forEach(resident -> {
                 ActivityValueVO activityValueVO = new ActivityValueVO();
