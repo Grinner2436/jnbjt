@@ -8,6 +8,11 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
 
     //活动列表
     var tableinit = function (data){
+        if(!data){
+            data = {
+                buff : 3
+            }
+        }
         table.render({
             elem: '#managementList',
             url : '/management/detail/list',
@@ -38,7 +43,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     //初始化下拉框内容
     $.getJSON("/info/meta/list",function(data){
         var activityList = new Array();
-        var activities = data.activities;
+        var activities = data.activityList;
         $(activities).each(function() {
             var option = {
                 name: this.description,
@@ -92,12 +97,17 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         })
     });
 
-    //添加提升项
+    //搜索经营活动
     form.on("submit(searchManagement)",function(data){
+        var buff = 0;
+        layui.each($("[name=buff]:checked"),function(index, data){
+            buff = buff | data.value;
+        });
         var formData = {
             activityNames:xmSelect.get('#activity-select')[0].getValue('valueStr'),
             residentNames:xmSelect.get('#resident-select')[0].getValue('valueStr'),
-            assetNames:xmSelect.get('#asset-select')[0].getValue('valueStr')
+            assetNames:xmSelect.get('#asset-select')[0].getValue('valueStr'),
+            buff:buff
         }
         tableinit(formData);
         return false;

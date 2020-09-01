@@ -2,6 +2,7 @@ package com.grinner.game.jnbjt.service;
 
 import com.grinner.game.jnbjt.dao.jpa.ActivityRepository;
 import com.grinner.game.jnbjt.dao.jpa.ResidentRepository;
+import com.grinner.game.jnbjt.domain.constant.Buff;
 import com.grinner.game.jnbjt.domain.entity.*;
 import com.grinner.game.jnbjt.domain.enums.Profession;
 import com.grinner.game.jnbjt.domain.instance.AssetProperty;
@@ -11,6 +12,7 @@ import com.grinner.game.jnbjt.pojo.ao.ManagementQuery;
 import com.grinner.game.jnbjt.pojo.vo.AssetPropertyVO;
 import com.grinner.game.jnbjt.pojo.vo.ProfitVO;
 import com.grinner.game.jnbjt.pojo.vo.composite.ActivityValueVO;
+import com.grinner.game.jnbjt.util.BitMaskUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,6 @@ public class ManagementService {
 
     public List<ActivityValueVO> getDetailList(ManagementQuery managementQuery){
         List<ActivityValueVO> result = new ArrayList<>();
-
         List<Activity> allActivities = new ArrayList<>();
         Predicate<Activity> activityPredicate = activity -> {
             List<String> activityNames = managementQuery.getActivityNames();
@@ -41,9 +42,9 @@ public class ManagementService {
                 return true;
             }
             boolean activityNameMatch =  activityNames.stream().anyMatch(name -> activity.getDescription().contains(name));
-            if(!activityNameMatch){
-                return false;
-            }
+            return activityNameMatch;
+        };
+        Predicate<Activity> assetPredicate = activity -> {
             List<String> assetNames = managementQuery.getAssetNames();
             if(assetNames == null || assetNames.isEmpty()){
                 return true;
@@ -52,19 +53,21 @@ public class ManagementService {
             assetNameList.retainAll(assetNames);
             return assetNameList.size() > 0;
         };
-        {
+
+        if(BitMaskUtils.have(managementQuery.getBuff(), Buff.REVITALIZATION)){
             List<Activity> revitalizedActivities = activityManager.getRevitalizedActivities();
-            revitalizedActivities = revitalizedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            revitalizedActivities = revitalizedActivities.stream().filter(activityPredicate).filter(assetPredicate).collect(Collectors.toList());
             allActivities.addAll(revitalizedActivities);
         }
-        {
+        if(BitMaskUtils.have(managementQuery.getBuff(), Buff.STATUE)){
             List<Activity> flourishedActivities = activityManager.getFlourishedActivities();
-            flourishedActivities = flourishedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            flourishedActivities = flourishedActivities.stream().filter(activityPredicate).filter(assetPredicate).collect(Collectors.toList());
             allActivities.addAll(flourishedActivities);
         }
-        {
+        if(BitMaskUtils.have(managementQuery.getBuff(), Buff.REVITALIZATION) &&
+                BitMaskUtils.have(managementQuery.getBuff(), Buff.STATUE)){
             List<Activity> revitalizedAndFlourishedActivities = activityManager.getRevitalizedAndFlourishedActivities();
-            revitalizedAndFlourishedActivities = revitalizedAndFlourishedActivities.stream().filter(activityPredicate).collect(Collectors.toList());
+            revitalizedAndFlourishedActivities = revitalizedAndFlourishedActivities.stream().filter(activityPredicate).filter(assetPredicate).collect(Collectors.toList());
             allActivities.addAll(revitalizedAndFlourishedActivities);
         }
 

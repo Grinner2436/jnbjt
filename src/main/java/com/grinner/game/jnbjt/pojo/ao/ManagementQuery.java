@@ -9,4 +9,5 @@ public class ManagementQuery {
     private List<String> activityNames;
     private List<String> residentNames;
     private List<String> assetNames;
+    private int buff;
 }
